@@ -7,28 +7,28 @@ define(function (require) {
 
     require('thirdLib/threejs/TransformControls');
 
-    var transformControl = null;
+    var transformControl = null,
+        cameraManager = null;
 
-    function RendererController(camera, domElement) {
-        this._domElement = (domElement !== undefined) ? domElement : document;
-        this._init();
+    function RendererController(domElement) {
+        this._init((domElement !== undefined) ? domElement : document);
     }
 
-    RendererController.prototype._init = function () {
+    RendererController.prototype._init = function (domElement) {
 
-        this._domElement.addEventListener("mousedown", this.onMouseDown, false);
-        this._domElement.addEventListener("touchstart", this.onMouseDown, false);
+        domElement.addEventListener("mousedown", this.onMouseDown, false);
+        domElement.addEventListener("touchstart", this.onMouseDown, false);
 
-        this._domElement.addEventListener("mousemove", this.onMouseMove, false);
-        this._domElement.addEventListener("touchmove", this.onMouseMove, false);
+        domElement.addEventListener("mousemove", this.onMouseMove, false);
+        domElement.addEventListener("touchmove", this.onMouseMove, false);
 
-        this._domElement.addEventListener("mouseup", this.onMouseUp, false);
-        this._domElement.addEventListener("mouseout", this.onMouseUp, false);
-        this._domElement.addEventListener("touchend", this.onMouseUp, false);
-        this._domElement.addEventListener("touchcancel", this.onMouseUp, false);
-        this._domElement.addEventListener("touchleave", this.onMouseUp, false);
+        domElement.addEventListener("mouseup", this.onMouseUp, false);
+        domElement.addEventListener("mouseout", this.onMouseUp, false);
+        domElement.addEventListener("touchend", this.onMouseUp, false);
+        domElement.addEventListener("touchcancel", this.onMouseUp, false);
+        domElement.addEventListener("touchleave", this.onMouseUp, false);
 
-        transformControl = new THREE.TransformControls(GlobalVar.cameraManager.getRenderInstance(), this._domElement);
+        transformControl = new THREE.TransformControls(GlobalVar.cameraManager.getRenderInstance(), domElement);
 
         GlobalVar.sceneManager.addMesh(transformControl);
     };
