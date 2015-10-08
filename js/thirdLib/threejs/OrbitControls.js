@@ -474,7 +474,7 @@ define(['THREE'], function (THREE) {
 
         }
 
-        function onMouseDown(event) {
+        this.onMouseDown = function (event) {
 
             if (scope.enabled === false) return;
 
@@ -508,15 +508,15 @@ define(['THREE'], function (THREE) {
 
             if (state !== STATE.NONE) {
 
-                document.addEventListener('mousemove', onMouseMove, false);
-                document.addEventListener('mouseup', onMouseUp, false);
+                //                document.addEventListener('mousemove', onMouseMove, false);
+                //                document.addEventListener('mouseup', onMouseUp, false);
                 scope.dispatchEvent(startEvent);
 
             }
 
-        }
+        };
 
-        function onMouseMove(event) {
+        this.onMouseMove = function (event) {
 
             if (scope.enabled === false) return;
 
@@ -573,20 +573,20 @@ define(['THREE'], function (THREE) {
 
             if (state !== STATE.NONE) scope.update();
 
-        }
+        };
 
-        function onMouseUp( /* event */ ) {
+        this.onMouseUp = function ( /* event */ ) {
 
             if (scope.enabled === false) return;
 
-            document.removeEventListener('mousemove', onMouseMove, false);
-            document.removeEventListener('mouseup', onMouseUp, false);
+            //            document.removeEventListener('mousemove', onMouseMove, false);
+            //            document.removeEventListener('mouseup', onMouseUp, false);
             scope.dispatchEvent(endEvent);
             state = STATE.NONE;
 
-        }
+        };
 
-        function onMouseWheel(event) {
+        this.onMouseWheel = function (event) {
 
             if (scope.enabled === false || scope.enableZoom === false || state !== STATE.NONE) return;
 
@@ -623,9 +623,9 @@ define(['THREE'], function (THREE) {
             scope.dispatchEvent(startEvent);
             scope.dispatchEvent(endEvent);
 
-        }
+        };
 
-        function onKeyDown(event) {
+        this.onKeyDown = function (event) {
 
             if (scope.enabled === false || scope.enableKeys === false || scope.enablePan === false) return;
 
@@ -653,9 +653,9 @@ define(['THREE'], function (THREE) {
 
             }
 
-        }
+        };
 
-        function touchstart(event) {
+        this.touchstart = function (event) {
 
             if (scope.enabled === false) return;
 
@@ -699,9 +699,9 @@ define(['THREE'], function (THREE) {
 
             if (state !== STATE.NONE) scope.dispatchEvent(startEvent);
 
-        }
+        };
 
-        function touchmove(event) {
+        this.onTouchMove = function (event) {
 
             if (scope.enabled === false) return;
 
@@ -778,52 +778,52 @@ define(['THREE'], function (THREE) {
 
             }
 
-        }
+        };
 
-        function touchend( /* event */ ) {
+        this.touchend = function ( /* event */ ) {
 
             if (scope.enabled === false) return;
 
             scope.dispatchEvent(endEvent);
             state = STATE.NONE;
 
-        }
+        };
 
-        function contextmenu(event) {
+        this.contextmenu = function (event) {
 
             event.preventDefault();
 
-        }
+        };
 
         this.dispose = function () {
 
-            this.domElement.removeEventListener('contextmenu', contextmenu, false);
-            this.domElement.removeEventListener('mousedown', onMouseDown, false);
-            this.domElement.removeEventListener('mousewheel', onMouseWheel, false);
-            this.domElement.removeEventListener('DOMMouseScroll', onMouseWheel, false); // firefox
-
-            this.domElement.removeEventListener('touchstart', touchstart, false);
-            this.domElement.removeEventListener('touchend', touchend, false);
-            this.domElement.removeEventListener('touchmove', touchmove, false);
-
-            document.removeEventListener('mousemove', onMouseMove, false);
-            document.removeEventListener('mouseup', onMouseUp, false);
-
-            window.removeEventListener('keydown', onKeyDown, false);
+            //            this.domElement.removeEventListener('contextmenu', contextmenu, false);
+            //            this.domElement.removeEventListener('mousedown', onMouseDown, false);
+            //            this.domElement.removeEventListener('mousewheel', onMouseWheel, false);
+            //            this.domElement.removeEventListener('DOMMouseScroll', onMouseWheel, false); // firefox
+            //
+            //            this.domElement.removeEventListener('touchstart', touchstart, false);
+            //            this.domElement.removeEventListener('touchend', touchend, false);
+            //            this.domElement.removeEventListener('touchmove', touchmove, false);
+            //
+            //            document.removeEventListener('mousemove', onMouseMove, false);
+            //            document.removeEventListener('mouseup', onMouseUp, false);
+            //
+            //            window.removeEventListener('keydown', onKeyDown, false);
 
         };
 
-        this.domElement.addEventListener('contextmenu', contextmenu, false);
-
-        this.domElement.addEventListener('mousedown', onMouseDown, false);
-        this.domElement.addEventListener('mousewheel', onMouseWheel, false);
-        this.domElement.addEventListener('DOMMouseScroll', onMouseWheel, false); // firefox
-
-        this.domElement.addEventListener('touchstart', touchstart, false);
-        this.domElement.addEventListener('touchend', touchend, false);
-        this.domElement.addEventListener('touchmove', touchmove, false);
-
-        window.addEventListener('keydown', onKeyDown, false);
+        //        this.domElement.addEventListener('contextmenu', contextmenu, false);
+        //
+        //        this.domElement.addEventListener('mousedown', onMouseDown, false);
+        //        this.domElement.addEventListener('mousewheel', onMouseWheel, false);
+        //        this.domElement.addEventListener('DOMMouseScroll', onMouseWheel, false); // firefox
+        //
+        //        this.domElement.addEventListener('touchstart', touchstart, false);
+        //        this.domElement.addEventListener('touchend', touchend, false);
+        //        this.domElement.addEventListener('touchmove', touchmove, false);
+        //
+        //        window.addEventListener('keydown', onKeyDown, false);
 
         // force an update at start
         this.update();
