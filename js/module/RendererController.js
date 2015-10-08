@@ -42,7 +42,12 @@ define(function (require) {
     };
 
     RendererController.prototype.onMouseDown = function (event) {
-        transformControl.onPointerDown(event);
+
+        var isClickOnMesh = false;
+
+        if (!isClickOnMesh) {
+            transformControl.onPointerDown(event);
+        }
     };
 
     RendererController.prototype.attachTransformControl = function (mesh) {
@@ -51,7 +56,7 @@ define(function (require) {
 
     RendererController.prototype.setTransformControlSize = function (size) {
         transformControl.size = size;
-    }
+    };
 
     RendererController.prototype.update = function () {
         transformControl.update();

@@ -867,13 +867,15 @@ define(function (require) {
 
         this.onPointerDown = function (event) {
 
-            if (scope.object === undefined || _dragging === true || (event.button !== undefined && event.button !== 0)) return;
+            var intersect = false;
+
+            if (scope.object === undefined || _dragging === true || (event.button !== undefined && event.button !== 0)) return intersect;
 
             var pointer = event.changedTouches ? event.changedTouches[0] : event;
 
             if (pointer.button === 0 || pointer.button === undefined) {
 
-                var intersect = intersectObjects(pointer, _gizmo[_mode].pickers.children);
+                intersect = intersectObjects(pointer, _gizmo[_mode].pickers.children);
 
                 if (intersect) {
 
@@ -912,6 +914,8 @@ define(function (require) {
             }
 
             _dragging = true;
+
+            return intersect;
 
         };
 
