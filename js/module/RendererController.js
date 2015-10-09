@@ -33,18 +33,35 @@ define(function (require) {
         domElement.addEventListener("touchleave", this.onMouseUp, false);
 
         transformControl = new THREE.TransformControls(GlobalVar.cameraManager.getRenderInstance(), domElement);
+        transformControl.setSpace('world');
 
         orbitControl = new THREE.OrbitControls(GlobalVar.cameraManager.getRenderInstance(), domElement);
         orbitControl.enableDamping = true;
         orbitControl.dampingFactor = 0.25;
 
-        GlobalVar.sceneManager.addMesh(transformControl);
+        GlobalVar.sceneManager.addStaticMesh(transformControl);
+
+        document.getElementById('translateButton').addEventListener('click', function (event) {
+            transformControl.setMode('translate');
+            transformControl.setSpace('world');
+        });
+
+        document.getElementById('rotateButton').addEventListener('click', function (event) {
+            transformControl.setMode('rotate');
+            transformControl.setSpace('world');
+        });
+        document.getElementById('scaleButton').addEventListener('click', function (event) {
+            transformControl.setMode('scale');
+            transformControl.setSpace('local');
+        });
+
     };
 
     RendererController.prototype.onMouseMove = function (event) {
         if (!isPointerDown) {
             return;
         }
+        //transformControl.axis = "XZ";
         transformControl.onPointerMove(event);
         orbitControl.onMouseMove(event);
     };
@@ -58,13 +75,25 @@ define(function (require) {
     RendererController.prototype.onMouseDown = function (event) {
 
         isPointerDown = true;
-        var isClickOnMesh = false;
 
-        if (isClickOnMesh) {
+        var isTransformToolClicked = transformControl.onPointerDown(event);
+
+        var hitResult = GlobalVar.sceneManager.getHitResultBy(event, GlobalVar.sceneManager.HIT_RESULT_CHANNEL.MESH);
+
+        if (0 < hitResult.length) {
+            //            if (hitResult[0].object.material.transparent) {
+            //                hitResult[0].object.material.opacity = 1.0;
+            //                hitResult[0].object.material.transparent = false;
+            //            } else {
+            //                hitResult[0].object.material.transparent = true;
+            //                hitResult[0].object.material.opacity = 0.1;
+            //            }
+
+            transformControl.attach(hitResult[0].object);
             return;
         }
 
-        if (!transformControl.onPointerDown(event)) {
+        if (!isTransformToolClicked) {
             orbitControl.onMouseDown(event);
         }
     };

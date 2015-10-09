@@ -1,13 +1,15 @@
+/* global define */
 define(function (require) {
     'use strict';
 
     var THREE = require('THREE');
 
-    function CameraManager(camera) {
+    function CameraManager(viewportWidth, viewportHeight, domElement) {
 
-        this._camera = camera;
+        this._camera = new THREE.PerspectiveCamera(75, viewportWidth / viewportHeight, 0.1, 8000);
+        this._viewport = domElement;
         this._init();
-    };
+    }
 
     CameraManager.prototype._init = function () {
         this._camera.position.set(0, 100, 100);
@@ -24,6 +26,10 @@ define(function (require) {
 
     CameraManager.prototype.getRenderInstance = function () {
         return this._camera;
+    };
+
+    CameraManager.prototype.getViewport = function () {
+        return this._viewport;
     };
 
     return CameraManager;

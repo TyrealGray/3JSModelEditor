@@ -22,8 +22,7 @@ define(function (require) {
     ThreejsRenderer.prototype._init = function () {
 
         GlobalVar.sceneManager = new SceneManager(new THREE.Scene());
-        GlobalVar.cameraManager = new CameraManager(new THREE.PerspectiveCamera(75,
-            window.innerWidth / window.innerHeight, 0.1, 8000));
+        GlobalVar.cameraManager = new CameraManager(window.innerWidth, window.innerHeight, this._renderer.domElement);
 
         this._renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
 
@@ -61,6 +60,7 @@ define(function (require) {
             GlobalVar.sceneManager.addMesh(modelMesh);
 
             GlobalVar.rendererController.attachTransformControl(modelMesh);
+            GlobalVar.rendererController.setTransformControlSize(2);
 
             GlobalVar.cameraManager.lookAt(modelMesh.position);
         });
