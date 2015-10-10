@@ -1,2 +1,2 @@
-# RendererController.js
-A three.js class which provided mesh controllability and camera controllability
+# 3JSModelEditor
+A model editor based on three.js
