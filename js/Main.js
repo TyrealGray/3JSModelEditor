@@ -8,7 +8,7 @@ requirejs.config({
         Mustache: 'thirdLib/mustachejs/mustache.min',
         GlobalVar: 'module/GlobalVar',
         MainFrame: 'module/MainFrame',
-        THREE: 'thirdLib/threejs/three.min'
+        THREE: 'thirdLib/threejs/Three.min'
     },
     shim: {
         THREE: {

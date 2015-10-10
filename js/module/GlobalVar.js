@@ -9,6 +9,8 @@ define(function () {
 
         cameraManager: null,
 
+        transformTool: null,
+
         rendererController: null
     };
 });

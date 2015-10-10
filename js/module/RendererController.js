@@ -1,113 +1,148 @@
-/* global define, document */
+/* global define, document, window */
 define(function (require) {
 
     var THREE = require('THREE'),
+
+        SceneManager = require('module/manager/SceneManager'),
+        CameraManager = require('module/manager/CameraManager'),
+        TransformTool = require('module/component/TransformTool'),
 
         GlobalVar = require('module/GlobalVar');
 
     require('thirdLib/threejs/TransformControls');
     require('thirdLib/threejs/OrbitControls');
 
-    var transformControl = null,
-        orbitControl = null,
-        cameraManager = null,
-        isPointerDown = false;
+    var self = null;
 
     function RendererController(domElement) {
-        this._init((domElement !== undefined) ? domElement : document);
+
+        this._domElement = domElement;
+        this._sceneManager = new SceneManager();
+        this._cameraManager = new CameraManager(window.innerWidth, window.innerHeight, domElement);
+        this._transformTool = null;
+        this._orbitControl = null;
+        this._isTouchSensorDown = false;
+        this._isTransformStatus = false;
+
+        this._init();
     }
 
-    RendererController.prototype._init = function (domElement) {
-        domElement.addEventListener("mousedown", this.onMouseDown, false);
-        domElement.addEventListener("mousemove", this.onMouseMove, false);
-        domElement.addEventListener("mouseup", this.onMouseUp, false);
-        domElement.addEventListener("mouseout", this.onMouseUp, false);
+    RendererController.prototype._init = function () {
 
-        domElement.addEventListener("mousewheel", this.onMouseWheel, false);
+        self = this;
+        GlobalVar.cameraManager = this._cameraManager;
+        GlobalVar.sceneManager = this._sceneManager;
 
-        domElement.addEventListener("touchstart", this.onTouchStart, false);
-        domElement.addEventListener("touchmove", this.onTouchMove, false);
-        domElement.addEventListener("touchend", this.onTouchEnd, false);
+        this._initTransformControl();
+        this._initOrbitControl();
 
-        domElement.addEventListener("touchcancel", this.onMouseUp, false);
-        domElement.addEventListener("touchleave", this.onMouseUp, false);
+        this._bindRenderDomEvent();
+    };
 
-        transformControl = new THREE.TransformControls(GlobalVar.cameraManager.getRenderInstance(), domElement);
-        transformControl.setSpace('world');
+    RendererController.prototype._initTransformControl = function () {
+        this._transformTool = new TransformTool(this._domElement);
 
-        orbitControl = new THREE.OrbitControls(GlobalVar.cameraManager.getRenderInstance(), domElement);
-        orbitControl.enableDamping = true;
-        orbitControl.dampingFactor = 0.25;
+        GlobalVar.transformTool = this._transformTool;
+    };
 
-        GlobalVar.sceneManager.addStaticMesh(transformControl);
+    RendererController.prototype._initOrbitControl = function () {
 
+        this._orbitControl = new THREE.OrbitControls(this._cameraManager.getRenderInstance(), this._domElement);
+        this._orbitControl.enableDamping = true;
+        this._orbitControl.dampingFactor = 0.25;
+    };
+
+    RendererController.prototype._bindRenderDomEvent = function () {
+
+        this._domElement.addEventListener("mousedown", this.onMouseDown, false);
+        this._domElement.addEventListener("mousemove", this.onMouseMove, false);
+        this._domElement.addEventListener("mouseup", this.onMouseUp, false);
+        this._domElement.addEventListener("mouseout", this.onMouseUp, false);
+
+        this._domElement.addEventListener("mousewheel", this.onMouseWheel, false);
+
+        this._domElement.addEventListener("touchstart", this.onTouchStart, false);
+        this._domElement.addEventListener("touchmove", this.onTouchMove, false);
+        this._domElement.addEventListener("touchend", this.onTouchEnd, false);
+
+        this._domElement.addEventListener("touchcancel", this.onMouseUp, false);
+        this._domElement.addEventListener("touchleave", this.onMouseUp, false);
+
+        //TODO change those function to mainFrame.js
         document.getElementById('translateButton').addEventListener('click', function (event) {
-            transformControl.setMode('translate');
-            transformControl.setSpace('world');
+            self._transformTool.setMode(TransformTool.prototype.TRANSFORM_MODE.TRANSFORM);
         });
 
         document.getElementById('rotateButton').addEventListener('click', function (event) {
-            transformControl.setMode('rotate');
-            transformControl.setSpace('world');
+            self._transformTool.setMode(TransformTool.prototype.TRANSFORM_MODE.ROTATE);
         });
         document.getElementById('scaleButton').addEventListener('click', function (event) {
-            transformControl.setMode('scale');
-            transformControl.setSpace('local');
+            self._transformTool.setMode(TransformTool.prototype.TRANSFORM_MODE.SCALE);
         });
+    };
 
+    RendererController.prototype.spawnObject = function (object) {
+        this._sceneManager.addMesh(object);
+    };
+
+    RendererController.prototype.setCameraLookAt = function (position) {
+        this._cameraManager.lookAt(position);
+    };
+
+    RendererController.prototype.attachTransformControl = function (mesh) {
+        this._transformTool.attach(mesh);
     };
 
     RendererController.prototype.onMouseMove = function (event) {
-        if (!isPointerDown) {
+        if (!self._isTouchSensorDown) {
             return;
         }
-        //transformControl.axis = "XZ";
-        transformControl.onPointerMove(event);
-        orbitControl.onMouseMove(event);
+
+        if (self._isTransformStatus) {
+            self._transformTool.onPointerMove(event);
+        } else {
+            self._orbitControl.onMouseMove(event);
+        }
     };
 
     RendererController.prototype.onMouseUp = function (event) {
-        isPointerDown = false;
-        transformControl.onPointerUp(event);
-        orbitControl.onMouseUp(event);
+        self._isTouchSensorDown = false;
+        self._transformTool.onPointerUp(event);
+        self._orbitControl.onMouseUp(event);
     };
 
     RendererController.prototype.onMouseDown = function (event) {
 
-        isPointerDown = true;
-
-        var isTransformToolClicked = transformControl.onPointerDown(event);
+        self._isTouchSensorDown = true;
 
         var hitResult = GlobalVar.sceneManager.getHitResultBy(event, GlobalVar.sceneManager.HIT_RESULT_CHANNEL.MESH);
 
-        if (0 < hitResult.length) {
-            //            if (hitResult[0].object.material.transparent) {
-            //                hitResult[0].object.material.opacity = 1.0;
-            //                hitResult[0].object.material.transparent = false;
-            //            } else {
-            //                hitResult[0].object.material.transparent = true;
-            //                hitResult[0].object.material.opacity = 0.1;
-            //            }
+        self._isTransformStatus = self._transformTool.onPointerDown(event, (0 < hitResult.length) ? hitResult[0].point : null);
 
-            transformControl.attach(hitResult[0].object);
+        if (0 < hitResult.length) {
+
+            self._transformTool.attach(hitResult[0].object);
+            //self._isTransformStatus = self._transformTool.onPointerDown(event, hitResult[0].point);
             return;
         }
 
-        if (!isTransformToolClicked) {
-            orbitControl.onMouseDown(event);
+        //self._isTransformStatus = self._transformTool.onPointerDown(event, new THREE.Vector3(0, 0, 0));
+
+        if (!self._isTransformStatus) {
+            self._orbitControl.onMouseDown(event);
         }
     };
 
     RendererController.prototype.onTouchStart = function (event) {
-        isPointerDown = true;
+        self._isTouchSensorDown = true;
     };
 
     RendererController.prototype.onTouchMove = function (event) {
-        if (!isPointerDown) {
+        if (!self._isTouchSensorDown) {
             return;
         }
 
-        orbitControl.onTouchMove(event);
+        self._orbitControl.onTouchMove(event);
     };
 
     RendererController.prototype.onTouchEnd = function (event) {
@@ -115,20 +150,19 @@ define(function (require) {
     };
 
     RendererController.prototype.onMouseWheel = function (event) {
-        orbitControl.onMouseWheel(event);
-    };
-
-    RendererController.prototype.attachTransformControl = function (mesh) {
-        transformControl.attach(mesh);
-    };
-
-    RendererController.prototype.setTransformControlSize = function (size) {
-        transformControl.size = size;
+        self._orbitControl.onMouseWheel(event);
     };
 
     RendererController.prototype.update = function () {
-        transformControl.update();
-        orbitControl.update();
+        this._transformTool.update();
+        self._orbitControl.update();
+    };
+
+    RendererController.prototype.getRenderTarget = function () {
+        return {
+            scene: this._sceneManager.getRenderInstance(),
+            camera: this._cameraManager.getRenderInstance()
+        };
     };
 
     return RendererController;

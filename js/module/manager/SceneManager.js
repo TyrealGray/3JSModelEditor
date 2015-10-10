@@ -9,7 +9,7 @@ define(function (require) {
         ray = new THREE.Raycaster();
 
     function SceneManager(scene) {
-        this._scene = scene;
+        this._scene = new THREE.Scene();
         this._init();
         this._meshes = [];
     }
@@ -24,7 +24,7 @@ define(function (require) {
         var light = new THREE.DirectionalLight(0xffffff, 2);
         light.position.set(1, 1, 1);
 
-        this.addStaticMesh(new THREE.GridHelper(500, 100));
+        this.addStaticMesh(new THREE.GridHelper(80, 80));
 
         this.addLight(light);
         this.addLight(new THREE.AmbientLight("#112255"));

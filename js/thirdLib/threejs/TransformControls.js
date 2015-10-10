@@ -757,7 +757,7 @@ define(function (require) {
         this.attach = function (object) {
 
             this.object = object;
-            this.visible = true;
+            //this.visible = true;
             this.update();
 
         };
@@ -862,6 +862,48 @@ define(function (require) {
                 scope.dispatchEvent(changeEvent);
 
             }
+
+        };
+
+        this.onHorizontalModePointerDown = function (event, hitPoint) {
+
+            if (null === hitPoint) return false;
+
+            if (scope.object === undefined || _dragging === true || (event.button !== undefined && event.button !== 0)) return false;
+
+            var pointer = event.changedTouches ? event.changedTouches[0] : event;
+
+            if (pointer.button === 0 || pointer.button === undefined) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                scope.dispatchEvent(mouseDownEvent);
+
+                scope.axis = "XZ";
+
+                scope.update();
+
+                eye.copy(camPosition).sub(worldPosition).normalize();
+
+                _gizmo[_mode].setActivePlane(scope.axis, eye);
+
+                oldPosition.copy(scope.object.position);
+                oldScale.copy(scope.object.scale);
+
+                oldRotationMatrix.extractRotation(scope.object.matrix);
+                worldRotationMatrix.extractRotation(scope.object.matrixWorld);
+
+                parentRotationMatrix.extractRotation(scope.object.parent.matrixWorld);
+                parentScale.setFromMatrixScale(tempMatrix.getInverse(scope.object.parent.matrixWorld));
+
+                offset.copy(hitPoint);
+
+            }
+
+            _dragging = true;
+
+            return true;
 
         };
 
