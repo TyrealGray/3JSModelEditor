@@ -757,7 +757,7 @@ define(function (require) {
         this.attach = function (object) {
 
             this.object = object;
-            //this.visible = true;
+            this.visible = true;
             this.update();
 
         };

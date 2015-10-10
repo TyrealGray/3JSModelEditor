@@ -4,8 +4,6 @@ requirejs.config({
     baseUrl: 'js/',
 
     paths: {
-        text: 'thirdLib/requirejs/text',
-        Mustache: 'thirdLib/mustachejs/mustache.min',
         GlobalVar: 'module/GlobalVar',
         MainFrame: 'module/MainFrame',
         THREE: 'thirdLib/threejs/Three.min'

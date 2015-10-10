@@ -1,5 +1,6 @@
 /* global define, document, window */
 define(function (require) {
+    'use strict';
 
     var THREE = require('THREE'),
 
@@ -9,7 +10,6 @@ define(function (require) {
 
         GlobalVar = require('module/GlobalVar');
 
-    require('thirdLib/threejs/TransformControls');
     require('thirdLib/threejs/OrbitControls');
 
     var self = null;
@@ -122,11 +122,8 @@ define(function (require) {
         if (0 < hitResult.length) {
 
             self._transformTool.attach(hitResult[0].object);
-            //self._isTransformStatus = self._transformTool.onPointerDown(event, hitResult[0].point);
             return;
         }
-
-        //self._isTransformStatus = self._transformTool.onPointerDown(event, new THREE.Vector3(0, 0, 0));
 
         if (!self._isTransformStatus) {
             self._orbitControl.onMouseDown(event);
