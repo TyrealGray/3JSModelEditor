@@ -21,10 +21,12 @@ define(function (require) {
     var Context = require('module/Context'),
         CssJsLoader = require('module/CssJsLoader');
 
+    var mainFrame = null;
+
     require(['MainFrame'], function (MainFrame) {
         console.log('Editor Run');
 
-        new MainFrame();
+        mainFrame = new MainFrame();
 
         loadCssFiles();
     });
@@ -40,6 +42,11 @@ define(function (require) {
     }
 
     window.onbeforeunload = function () {
-        return '请确认您是否真的要退出';
+        return 'Are you sure want to exit';
+    };
+
+    window.onresize = function () {
+
+        mainFrame.onWindowResize();
     };
 });

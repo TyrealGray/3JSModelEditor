@@ -23,8 +23,12 @@ define(function (require) {
             frameRenderer.loadLocalModelFiles(uploader.target.files);
         });
 
-        frameRenderer.loadUrlModelFiles('./source/flower.stl');
+        frameRenderer.loadUrlModelFiles('./source/TR.obj');
 
+    };
+
+    MainFrame.prototype.onWindowResize = function () {
+        GlobalVar.frameRenderer.onWindowResize();
     };
 
 

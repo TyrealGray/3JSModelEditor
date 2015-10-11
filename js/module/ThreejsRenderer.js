@@ -66,6 +66,15 @@ define(function (require) {
         rendererController.setCameraLookAt(modelMesh.position);
     };
 
+    ThreejsRenderer.prototype.onWindowResize = function () {
+
+        rendererController.onWindowResize();
+
+        this._renderer.setSize(window.innerWidth, window.innerHeight);
+
+        this.render();
+    };
+
     ThreejsRenderer.prototype.render = function () {
 
         requestAnimationFrame(this.render.bind(this));
