@@ -23,7 +23,7 @@ define(function (require) {
             frameRenderer.loadLocalModelFiles(uploader.target.files);
         });
 
-        frameRenderer.loadUrlModelFiles('./3JSModelEditor/source/flower.stl');
+        frameRenderer.loadUrlModelFiles('./source/TR.obj');
 
     };
 
