@@ -19,9 +19,11 @@ define(function (require) {
 
         frameRenderer.render();
 
-        document.getElementById('LoadModelButton').addEventListener("change", function (uploader) {
+        document.getElementById('loadModelButton').addEventListener("change", function (uploader) {
             frameRenderer.loadLocalModelFiles(uploader.target.files);
         });
+
+        frameRenderer.loadUrlModelFiles('./source/flower.stl');
 
     };
 

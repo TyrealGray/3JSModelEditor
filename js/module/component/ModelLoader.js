@@ -1,4 +1,4 @@
-/* global define, window */
+/* global define, window, console, FileReader */
 define(function (require, exports) {
     'use strict';
 
@@ -62,7 +62,26 @@ define(function (require, exports) {
         reader.readAsBinaryString(file);
     }
 
+    function loadServerUrl(url, onModelReady) {
+        if (!CommonUtil.isDefined(_STLloader) || !CommonUtil.isDefined(_OBJloader)) {
+            _initOBJloader();
+            _initSTLloader();
+        }
+
+        var findStlModelIndex = url.search(/\\*.stl/i),
+            findObjModelIndex = url.search(/\\*.obj/i);
+
+        if (NOT_MODEL_FILE === findObjModelIndex && findObjModelIndex === findStlModelIndex) {
+            return;
+        }
+
+        var loader = (NOT_MODEL_FILE === findObjModelIndex) ? _STLloader : _OBJloader;
+
+        loader.load(url, onModelReady);
+    }
+
 
     exports.loadLocalFiles = loadLocalFiles;
+    exports.loadServerUrl = loadServerUrl;
 
 });
