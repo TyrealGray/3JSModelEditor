@@ -47,6 +47,8 @@ define(function (require) {
 
     window.onresize = function () {
 
-        mainFrame.onWindowResize();
+        if (null !== mainFrame) {
+            mainFrame.onWindowResize();
+        }
     };
 });
