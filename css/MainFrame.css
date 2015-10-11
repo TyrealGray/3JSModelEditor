@@ -1,0 +1,14 @@
+body {
+    overflow-x: hidden;
+}
+
+.ThreejsRenderView {
+    width: 50%;
+    height: 50%;
+    position: absolute;
+}
+
+.ThreejsRenderView > canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
