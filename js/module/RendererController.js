@@ -162,6 +162,11 @@ define(function (require) {
         };
     };
 
+    RendererController.prototype.onWindowResize = function () {
+        this._cameraManager.getRenderInstance().aspect = window.innerWidth / window.innerHeight;
+        this._cameraManager.getRenderInstance().updateProjectionMatrix();
+    };
+
     return RendererController;
 
 });

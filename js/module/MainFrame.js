@@ -27,6 +27,10 @@ define(function (require) {
 
     };
 
+    MainFrame.prototype.onWindowResize = function () {
+        GlobalVar.frameRenderer.onWindowResize();
+    };
+
 
     return MainFrame;
 
