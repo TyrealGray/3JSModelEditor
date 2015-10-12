@@ -60,6 +60,7 @@ define(function (require) {
         this._domElement.addEventListener("mouseout", this.onMouseUp, false);
 
         this._domElement.addEventListener("mousewheel", this.onMouseWheel, false);
+        this._domElement.addEventListener('DOMMouseScroll', this.onMouseWheel, false); // firefox
 
         this._domElement.addEventListener("touchstart", this.onTouchStart, false);
         this._domElement.addEventListener("touchmove", this.onTouchMove, false);
@@ -67,18 +68,6 @@ define(function (require) {
 
         this._domElement.addEventListener("touchcancel", this.onMouseUp, false);
         this._domElement.addEventListener("touchleave", this.onMouseUp, false);
-
-        //TODO change those function to mainFrame.js
-        document.getElementById('translateButton').addEventListener('click', function (event) {
-            self._transformTool.setMode(TransformTool.prototype.TRANSFORM_MODE.TRANSFORM);
-        });
-
-        document.getElementById('rotateButton').addEventListener('click', function (event) {
-            self._transformTool.setMode(TransformTool.prototype.TRANSFORM_MODE.ROTATE);
-        });
-        document.getElementById('scaleButton').addEventListener('click', function (event) {
-            self._transformTool.setMode(TransformTool.prototype.TRANSFORM_MODE.SCALE);
-        });
     };
 
     RendererController.prototype.spawnObject = function (object) {
@@ -115,15 +104,7 @@ define(function (require) {
 
         self._isTouchSensorDown = true;
 
-        var hitResult = GlobalVar.sceneManager.getHitResultBy(event, GlobalVar.sceneManager.HIT_RESULT_CHANNEL.MESH);
-
-        self._isTransformStatus = self._transformTool.onPointerDown(event, (0 < hitResult.length) ? hitResult[0].point : null);
-
-        if (0 < hitResult.length) {
-
-            self._transformTool.attach(hitResult[0].object);
-            return;
-        }
+        self._isTransformStatus = self._isHitModifyMeshObject(event);
 
         if (!self._isTransformStatus) {
             self._orbitControl.onMouseDown(event);
@@ -132,6 +113,25 @@ define(function (require) {
 
     RendererController.prototype.onTouchStart = function (event) {
         self._isTouchSensorDown = true;
+
+        self._isTransformStatus = self._isHitModifyMeshObject(event);
+
+        if (!self._isTransformStatus) {
+            self._orbitControl.onTouchStart(event);
+        }
+    };
+
+    RendererController.prototype._isHitModifyMeshObject = function (event) {
+        var hitResult = this._sceneManager.getHitResultBy(event, this._sceneManager.HIT_RESULT_CHANNEL.MESH);
+
+        if (0 < hitResult.length) {
+
+            this._transformTool.attach(hitResult[0].object);
+        }
+
+        this._isTransformStatus = this._transformTool.onPointerDown(event, (0 < hitResult.length) ? hitResult[0].point : null);
+
+        return this._isTransformStatus;
     };
 
     RendererController.prototype.onTouchMove = function (event) {
@@ -139,11 +139,18 @@ define(function (require) {
             return;
         }
 
-        self._orbitControl.onTouchMove(event);
+        if (self._isTransformStatus) {
+            self._transformTool.onPointerMove(event);
+        } else {
+            self._orbitControl.onTouchMove(event);
+        }
+
     };
 
     RendererController.prototype.onTouchEnd = function (event) {
-
+        self._isTouchSensorDown = false;
+        self._transformTool.onPointerUp(event);
+        self._orbitControl.onTouchEnd(event);
     };
 
     RendererController.prototype.onMouseWheel = function (event) {
@@ -152,7 +159,7 @@ define(function (require) {
 
     RendererController.prototype.update = function () {
         this._transformTool.update();
-        self._orbitControl.update();
+        this._orbitControl.update();
     };
 
     RendererController.prototype.getRenderTarget = function () {

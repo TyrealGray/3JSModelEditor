@@ -655,7 +655,7 @@ define(['THREE'], function (THREE) {
 
         };
 
-        this.touchstart = function (event) {
+        this.onTouchStart = function (event) {
 
             if (scope.enabled === false) return;
 
@@ -780,7 +780,7 @@ define(['THREE'], function (THREE) {
 
         };
 
-        this.touchend = function ( /* event */ ) {
+        this.onTouchEnd = function ( /* event */ ) {
 
             if (scope.enabled === false) return;
 
