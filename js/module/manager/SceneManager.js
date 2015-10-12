@@ -21,13 +21,19 @@ define(function (require) {
 
     SceneManager.prototype._init = function () {
 
+        this.addStaticMesh(new THREE.GridHelper(80, 80));
+
         var light = new THREE.DirectionalLight(0xffffff, 2);
         light.position.set(1, 1, 1);
 
-        this.addStaticMesh(new THREE.GridHelper(80, 80));
+        this.addLight(light);
+
+        light = new THREE.DirectionalLight(0xffffff, 0.85);
+        light.position.set(-1, -1, -1);
 
         this.addLight(light);
-        this.addLight(new THREE.AmbientLight("#112255"));
+
+        this.addLight(new THREE.AmbientLight("#556699"));
 
     };
 

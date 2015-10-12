@@ -1,13 +1,14 @@
 /* global define */
 define(function (require) {
-    'use strict';
 
-    var THREE = require('THREE'),
+    var CommonUtil = require('lib/CommonUtil'),
+        THREE = require('THREE'),
         GlobalVar = require('module/GlobalVar');
 
     require('thirdLib/threejs/TransformControls');
 
     function TransformTool(domElement) {
+        this._attachedObject = null;
         this._transformMode = this.TRANSFORM_MODE.TRANSFORM;
         this._transformControls = null;
         this._init(domElement);
@@ -25,6 +26,34 @@ define(function (require) {
         this._transformControls.size = 2;
 
         GlobalVar.sceneManager.addStaticMesh(this._transformControls);
+    };
+
+    TransformTool.prototype.mirrorX = function () {
+        if (!CommonUtil.isDefined(this._attachedObject)) {
+            return;
+        }
+
+        this._mirror(-1, 1, 1);
+    };
+
+    TransformTool.prototype.mirrorY = function () {
+        if (!CommonUtil.isDefined(this._attachedObject)) {
+            return;
+        }
+
+        this._mirror(1, -1, 1);
+    };
+
+    TransformTool.prototype.mirrorZ = function () {
+        if (!CommonUtil.isDefined(this._attachedObject)) {
+            return;
+        }
+
+        this._mirror(1, 1, -1);
+    };
+
+    TransformTool.prototype._mirror = function (x, y, z) {
+        this._attachedObject.geometry.applyMatrix(new THREE.Matrix4().makeScale(x, y, z));
     };
 
     TransformTool.prototype.setMode = function (mode) {
@@ -51,14 +80,10 @@ define(function (require) {
 
     TransformTool.prototype.attach = function (object) {
         this._transformControls.attach(object);
+        this._attachedObject = object;
     };
 
     TransformTool.prototype.onPointerDown = function (event, hitPoint) {
-
-        //        if (this.TRANSFORM_MODE.TRANSFORM === this._transformMode) {
-        //            return this._transformControls.onHorizontalModePointerDown(event, hitPoint);
-        //        }
-
         return this._transformControls.onPointerDown(event);
     };
 

@@ -53,9 +53,9 @@ define(function (require) {
 
         modelMesh.geometry.center();
 
-        modelMesh.castShadow = true;
+        modelMesh.material.side = THREE.DoubleSide;
 
-        var size = new THREE.Box3().setFromObject(modelMesh).size();
+        modelMesh.castShadow = true;
 
         modelMesh.position.set(0, 0, 0);
 
