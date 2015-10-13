@@ -24,12 +24,12 @@ define(function (require) {
         this._camera.lookAt(position);
     };
 
-    CameraManager.prototype.getRenderInstance = function () {
-        return this._camera;
-    };
-
     CameraManager.prototype.getViewport = function () {
         return this._viewport;
+    };
+
+    CameraManager.prototype.get = function () {
+        return this._camera;
     };
 
     return CameraManager;

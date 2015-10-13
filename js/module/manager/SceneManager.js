@@ -37,7 +37,7 @@ define(function (require) {
 
     };
 
-    SceneManager.prototype.getRenderInstance = function () {
+    SceneManager.prototype.get = function () {
         return this._scene;
     };
 
@@ -73,7 +73,7 @@ define(function (require) {
     SceneManager.prototype.getHitResultBy = function (event, channel) {
         event.preventDefault();
 
-        var cameraManager = GlobalVar.cameraManager;
+        var cameraManager = GlobalVar.sceneController.getCameraManager();
         var viewport = cameraManager.getViewport();
 
         var rect = viewport.getBoundingClientRect();
@@ -82,7 +82,7 @@ define(function (require) {
 
 
         pointerVector.set((x * 2) - 1, -(y * 2) + 1);
-        ray.setFromCamera(pointerVector, cameraManager.getRenderInstance());
+        ray.setFromCamera(pointerVector, cameraManager.get());
 
         var hitResult = null;
 

@@ -6,11 +6,11 @@ define(function (require) {
         THREE = require('THREE'),
 
         ModelLoader = require('module/component/ModelLoader'),
-        RendererController = require('module/RendererController'),
+        SceneController = require('module/SceneController'),
 
-        GlobalVar = require('module/GlobalVar');
+        ModelFrame = require('module/component/ModelFrame');
 
-    var rendererController = null;
+    var sceneController = null;
 
     function ThreejsRenderer() {
         this._renderer = new THREE.WebGLRenderer();
@@ -20,9 +20,7 @@ define(function (require) {
 
     ThreejsRenderer.prototype._init = function () {
 
-        rendererController = new RendererController(this._renderer.domElement);
-
-        GlobalVar.rendererController = rendererController;
+        sceneController = new SceneController(this._renderer.domElement);
 
         this._renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
 
@@ -47,28 +45,36 @@ define(function (require) {
             return;
         }
 
-        var modelMesh = new THREE.Mesh(modelGeometry, new THREE.MeshLambertMaterial({
-            color: 0xc8c8c8
-        }));
+        //        var modelMesh = new THREE.Mesh(modelGeometry, new THREE.MeshLambertMaterial({
+        //            color: 0xc8c8c8
+        //        }));
+        //
+        //        modelMesh.geometry.center();
+        //
+        //        modelMesh.material.side = THREE.DoubleSide;
+        //
+        //        modelMesh.castShadow = true;
+        //
+        //        modelMesh.position.set(0, 0, 0);
+        //
+        //        
+        //        sceneController.attachTransformControl(modelMesh);
+        //
+        //        sceneController.setCameraLookAt(modelMesh.position);
 
-        modelMesh.geometry.center();
+        var model = new ModelFrame({
+            geometry: modelGeometry
+        });
 
-        modelMesh.material.side = THREE.DoubleSide;
+        sceneController.spawnModel(model.get().model);
 
-        modelMesh.castShadow = true;
+        sceneController.spawnMesh(model.get().box);
 
-        modelMesh.position.set(0, 0, 0);
-
-        GlobalVar.sceneManager.addMesh(modelMesh);
-
-        rendererController.attachTransformControl(modelMesh);
-
-        rendererController.setCameraLookAt(modelMesh.position);
     };
 
     ThreejsRenderer.prototype.onWindowResize = function () {
 
-        rendererController.onWindowResize();
+        sceneController.onWindowResize();
 
         this._renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -79,10 +85,10 @@ define(function (require) {
 
         requestAnimationFrame(this.render.bind(this));
 
-        rendererController.update();
+        sceneController.update();
 
-        this._renderer.render(rendererController.getRenderTarget().scene,
-            rendererController.getRenderTarget().camera);
+        this._renderer.render(sceneController.getRenderTarget().scene,
+            sceneController.getRenderTarget().camera);
     };
 
     return ThreejsRenderer;
