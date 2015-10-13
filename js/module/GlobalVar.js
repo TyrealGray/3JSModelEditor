@@ -5,12 +5,8 @@ define(function () {
     return {
         frameRenderer: null,
 
-        sceneManager: null,
-
-        cameraManager: null,
-
         transformTool: null,
 
-        rendererController: null
+        sceneController: null
     };
 });

@@ -1,7 +1,7 @@
-
-define( function (require, exports) {
+/* global define, window */
+define(function (require, exports) {
     'use strict';
-    
+
     /**
      * 判定事件是否为右键
      * @param {MouseEvent} event
@@ -18,7 +18,7 @@ define( function (require, exports) {
             return false;
         }
     }
-    
+
     /**
      * 阻止事件传递
      * @param {MouseEvent} event
@@ -31,8 +31,8 @@ define( function (require, exports) {
             }
         }
     }
-    
+
     // export
     exports.isRightClick = isRightClick;
     exports.stopPropagation = stopPropagation;
-} );
+});

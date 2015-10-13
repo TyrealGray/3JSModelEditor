@@ -21,11 +21,11 @@ define(function (require) {
     };
 
     TransformTool.prototype._init = function (domElement) {
-        this._transformControls = new THREE.TransformControls(GlobalVar.cameraManager.getRenderInstance(), domElement);
+        this._transformControls = new THREE.TransformControls(GlobalVar.sceneController.getRenderTarget().camera, domElement);
         this._transformControls.setSpace('world');
         this._transformControls.size = 2;
 
-        GlobalVar.sceneManager.addStaticMesh(this._transformControls);
+        GlobalVar.sceneController.spawnMesh(this._transformControls);
     };
 
     TransformTool.prototype.mirrorX = function () {
