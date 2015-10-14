@@ -8,6 +8,8 @@ define(function (require) {
         CameraManager = require('module/manager/CameraManager'),
         TransformTool = require('module/component/TransformTool'),
 
+        ModelFrameSet = require('module/util/ModelFrameSet'),
+
         GlobalVar = require('module/GlobalVar');
 
     require('thirdLib/threejs/OrbitControls');
@@ -69,8 +71,10 @@ define(function (require) {
         this._domElement.addEventListener("touchleave", this.onMouseUp, false);
     };
 
-    SceneController.prototype.spawnModel = function (model) {
-        this._sceneManager.addMesh(model);
+    SceneController.prototype.spawnModel = function (modelFrame) {
+        ModelFrameSet.addModelFrame(modelFrame);
+        this._sceneManager.addMesh(modelFrame.get().model);
+        this._sceneManager.addStaticMesh(modelFrame.get().box);
     };
 
     SceneController.prototype.spawnMesh = function (mesh) {
@@ -129,7 +133,7 @@ define(function (require) {
 
         if (0 < hitResult.length) {
 
-            this._transformTool.attach(hitResult[0].object);
+            this._transformTool.attachModel(ModelFrameSet.getModelFrame(hitResult[0].object));
         }
 
         this._isTransformStatus = this._transformTool.onPointerDown(event, (0 < hitResult.length) ? hitResult[0].point : null);
@@ -169,10 +173,14 @@ define(function (require) {
         return this._cameraManager;
     };
 
+    SceneController.prototype.getSceneManager = function () {
+        return this._sceneManager;
+    };
+
     SceneController.prototype.getRenderTarget = function () {
         return {
-            scene: this._sceneManager.get(),
-            camera: this._cameraManager.get()
+            scene: this.getSceneManager().get(),
+            camera: this.getCameraManager().get()
         };
     };
 

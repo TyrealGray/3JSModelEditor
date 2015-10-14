@@ -8,7 +8,9 @@ define(function (require) {
         ModelLoader = require('module/component/ModelLoader'),
         SceneController = require('module/SceneController'),
 
-        ModelFrame = require('module/component/ModelFrame');
+        ModelFrame = require('module/component/ModelFrame'),
+
+        GlobalVar = require('module/GlobalVar');
 
     var sceneController = null;
 
@@ -45,31 +47,13 @@ define(function (require) {
             return;
         }
 
-        //        var modelMesh = new THREE.Mesh(modelGeometry, new THREE.MeshLambertMaterial({
-        //            color: 0xc8c8c8
-        //        }));
-        //
-        //        modelMesh.geometry.center();
-        //
-        //        modelMesh.material.side = THREE.DoubleSide;
-        //
-        //        modelMesh.castShadow = true;
-        //
-        //        modelMesh.position.set(0, 0, 0);
-        //
-        //        
-        //        sceneController.attachTransformControl(modelMesh);
-        //
-        //        sceneController.setCameraLookAt(modelMesh.position);
-
         var model = new ModelFrame({
             geometry: modelGeometry
         });
 
-        sceneController.spawnModel(model.get().model);
+        sceneController.spawnModel(model);
 
-        sceneController.spawnMesh(model.get().box);
-
+        GlobalVar.transformTool.attachModel(model);
     };
 
     ThreejsRenderer.prototype.onWindowResize = function () {

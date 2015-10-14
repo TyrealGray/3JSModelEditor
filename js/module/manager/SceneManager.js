@@ -3,6 +3,7 @@ define(function (require) {
     'use strict';
 
     var THREE = require('THREE'),
+
         GlobalVar = require('module/GlobalVar');
 
     var pointerVector = new THREE.Vector2(0, 0, 0),

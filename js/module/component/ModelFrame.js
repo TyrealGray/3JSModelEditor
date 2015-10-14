@@ -1,5 +1,6 @@
 /* global define */
 define(function (require) {
+    'use strict';
 
     var THREE = require('THREE'),
 
@@ -11,7 +12,7 @@ define(function (require) {
             color: 0xc8c8c8
         }));
 
-        this._box = null;
+        this._boundingBox = null;
 
         this._init(modelDetail);
     }
@@ -36,19 +37,49 @@ define(function (require) {
     };
 
     ModelFrame.prototype._initBox = function () {
-        this._box = new THREE.BoundingBoxHelper(this._model, 0xffff00);
-        this._box.update();
+        this._boundingBox = new THREE.BoundingBoxHelper(this._model, 0xffff00);
+        this._boundingBox.update();
+    };
+
+    ModelFrame.prototype.checkOverlap = function (otherModelFrame) {
+
+        otherModelFrame.get().model.updateMatrix();
+        this._model.updateMatrix();
+
+        var otherBoundingBox = otherModelFrame.get().box;
+
+        otherBoundingBox.box.setFromObject(otherModelFrame.get().model);
+        this._boundingBox.box.setFromObject(this._model);
+
+        if (this._boundingBox.box.isIntersectionBox(otherBoundingBox.box)) {
+
+            return this._boundingBox.box.intersect(otherBoundingBox.box);
+        }
+
+        return null;
+
+    };
+
+    ModelFrame.prototype.getSize = function () {
+
+        this._model.updateMatrix();
+
+        this._boundingBox.box.setFromObject(this._model);
+
+        return this._boundingBox.box.size();
     };
 
     ModelFrame.prototype.update = function () {
-        this._box.update();
+
+        this._model.updateMatrix();
+        this._boundingBox.update();
     };
 
     ModelFrame.prototype.get = function () {
 
         return {
             model: this._model,
-            box: this._box
+            box: this._boundingBox
         };
     };
 

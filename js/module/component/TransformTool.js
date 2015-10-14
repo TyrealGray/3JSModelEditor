@@ -1,14 +1,17 @@
 /* global define */
 define(function (require) {
+    'use strict';
 
     var CommonUtil = require('lib/CommonUtil'),
         THREE = require('THREE'),
+
+        ModelFrameSet = require('module/util/ModelFrameSet'),
         GlobalVar = require('module/GlobalVar');
 
     require('thirdLib/threejs/TransformControls');
 
     function TransformTool(domElement) {
-        this._attachedObject = null;
+        this._attachedModel = null;
         this._transformMode = this.TRANSFORM_MODE.TRANSFORM;
         this._transformControls = null;
         this._init(domElement);
@@ -23,13 +26,14 @@ define(function (require) {
     TransformTool.prototype._init = function (domElement) {
         this._transformControls = new THREE.TransformControls(GlobalVar.sceneController.getRenderTarget().camera, domElement);
         this._transformControls.setSpace('world');
+        this._transformControls.visible = false;
         this._transformControls.size = 2;
 
         GlobalVar.sceneController.spawnMesh(this._transformControls);
     };
 
     TransformTool.prototype.mirrorX = function () {
-        if (!CommonUtil.isDefined(this._attachedObject)) {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
             return;
         }
 
@@ -37,7 +41,7 @@ define(function (require) {
     };
 
     TransformTool.prototype.mirrorY = function () {
-        if (!CommonUtil.isDefined(this._attachedObject)) {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
             return;
         }
 
@@ -45,7 +49,7 @@ define(function (require) {
     };
 
     TransformTool.prototype.mirrorZ = function () {
-        if (!CommonUtil.isDefined(this._attachedObject)) {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
             return;
         }
 
@@ -53,7 +57,10 @@ define(function (require) {
     };
 
     TransformTool.prototype._mirror = function (x, y, z) {
-        this._attachedObject.geometry.applyMatrix(new THREE.Matrix4().makeScale(x, y, z));
+
+        this._attachedModel.get().model.geometry.applyMatrix(new THREE.Matrix4().makeScale(x, y, z));
+
+        this._attachedModel.update();
     };
 
     TransformTool.prototype.setMode = function (mode) {
@@ -64,35 +71,56 @@ define(function (require) {
         case this.TRANSFORM_MODE.TRANSFORM:
             this._transformControls.setMode('translate');
             this._transformControls.setSpace('world');
+            this._transformControls.visible = false;
             break;
         case this.TRANSFORM_MODE.ROTATE:
             this._transformControls.setMode('rotate');
             this._transformControls.setSpace('world');
+            this._transformControls.visible = true;
             break;
         case this.TRANSFORM_MODE.SCALE:
             this._transformControls.setMode('scale');
             this._transformControls.setSpace('local');
+            this._transformControls.visible = true;
             break;
         default:
             break;
         }
     };
 
-    TransformTool.prototype.attach = function (object) {
-        this._transformControls.attach(object);
-        this._attachedObject = object;
+    TransformTool.prototype.attachModel = function (model) {
+        this._transformControls.attach(model.get().model);
+        this._attachedModel = model;
     };
 
     TransformTool.prototype.onPointerDown = function (event, hitPoint) {
+
+        if (this.TRANSFORM_MODE.TRANSFORM === this._transformMode) {
+            return this._transformControls.onHorizontalModePointerDown(event, hitPoint);
+        }
+
         return this._transformControls.onPointerDown(event);
     };
 
     TransformTool.prototype.onPointerMove = function (event) {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
+            return;
+        }
+
         this._transformControls.onPointerMove(event);
+
+        this._attachedModel.update();
     };
 
     TransformTool.prototype.onPointerUp = function (event) {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
+            return;
+        }
+
         this._transformControls.onPointerUp(event);
+        this._attachedModel.update();
+
+        ModelFrameSet.manageOverlapOtherModel(this._attachedModel);
     };
 
     TransformTool.prototype.update = function () {
