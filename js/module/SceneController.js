@@ -14,7 +14,8 @@ define(function (require) {
 
     require('thirdLib/threejs/OrbitControls');
 
-    var self = null;
+    var self = null,
+        cameraTarget = null;
 
     function SceneController(domElement) {
 
@@ -50,7 +51,7 @@ define(function (require) {
 
         this._orbitControl = new THREE.OrbitControls(this._cameraManager.get(), this._domElement);
         this._orbitControl.enableDamping = true;
-        this._orbitControl.dampingFactor = 0.25;
+        this._orbitControl.enablePan = false;
     };
 
     SceneController.prototype._bindRenderDomEvent = function () {
@@ -75,6 +76,7 @@ define(function (require) {
         ModelFrameSet.addModelFrame(modelFrame);
         this._sceneManager.addMesh(modelFrame.get().model);
         this._sceneManager.addStaticMesh(modelFrame.get().box);
+        modelFrame.update();
     };
 
     SceneController.prototype.spawnMesh = function (mesh) {
@@ -105,6 +107,9 @@ define(function (require) {
         self._isTouchSensorDown = false;
         self._transformTool.onPointerUp(event);
         self._orbitControl.onMouseUp(event);
+        if (null !== cameraTarget) {
+            self._orbitControl.target = cameraTarget;
+        }
     };
 
     SceneController.prototype.onMouseDown = function (event) {
@@ -134,6 +139,7 @@ define(function (require) {
         if (0 < hitResult.length) {
 
             this._transformTool.attachModel(ModelFrameSet.getModelFrame(hitResult[0].object));
+            cameraTarget = hitResult[0].object.position;
         }
 
         this._isTransformStatus = this._transformTool.onPointerDown(event, (0 < hitResult.length) ? hitResult[0].point : null);
@@ -158,6 +164,9 @@ define(function (require) {
         self._isTouchSensorDown = false;
         self._transformTool.onPointerUp(event);
         self._orbitControl.onTouchEnd(event);
+        if (null !== cameraTarget) {
+            self._orbitControl.target = cameraTarget;
+        }
     };
 
     SceneController.prototype.onMouseWheel = function (event) {

@@ -2,7 +2,9 @@
 define(function (require) {
     'use strict';
 
-    var THREE = require('THREE'),
+    var CommonUtil = require('lib/CommonUtil'),
+
+        THREE = require('THREE'),
 
         GlobalVar = require('module/GlobalVar');
 
@@ -60,11 +62,40 @@ define(function (require) {
 
     };
 
+    ModelFrame.prototype.mirrorX = function () {
+        if (!CommonUtil.isDefined(this._model)) {
+            return;
+        }
+
+        this._mirror(-1, 1, 1);
+    };
+
+    ModelFrame.prototype.mirrorY = function () {
+        if (!CommonUtil.isDefined(this._model)) {
+            return;
+        }
+
+        this._mirror(1, -1, 1);
+    };
+
+    ModelFrame.prototype.mirrorZ = function () {
+        if (!CommonUtil.isDefined(this._model)) {
+            return;
+        }
+
+        this._mirror(1, 1, -1);
+    };
+
+    ModelFrame.prototype._mirror = function (x, y, z) {
+
+        this._model.geometry.applyMatrix(new THREE.Matrix4().makeScale(x, y, z));
+
+        this.update();
+    };
+
     ModelFrame.prototype.getSize = function () {
 
-        this._model.updateMatrix();
-
-        this._boundingBox.box.setFromObject(this._model);
+        this.update();
 
         return this._boundingBox.box.size();
     };
@@ -73,6 +104,13 @@ define(function (require) {
 
         this._model.updateMatrix();
         this._boundingBox.update();
+    };
+
+    ModelFrame.prototype.dispose = function () {
+        this._model.geometry.dispose();
+        this._model.material.dispose();
+        this._boundingBox.geometry.dispose();
+        this._boundingBox.material.dispose();
     };
 
     ModelFrame.prototype.get = function () {
