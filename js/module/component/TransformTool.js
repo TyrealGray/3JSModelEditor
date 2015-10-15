@@ -102,10 +102,6 @@ define(function (require) {
 
     TransformTool.prototype.onPointerDown = function (event, hitPoint) {
 
-        if (this.TRANSFORM_MODE.TRANSFORM === this._transformMode) {
-            return this._transformControls.onHorizontalModePointerDown(event, hitPoint);
-        }
-
         return this._transformControls.onPointerDown(event);
     };
 
