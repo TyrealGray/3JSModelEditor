@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>3JSModelEditor</title>
+    <title>3DEditor</title>
 </head>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -10,13 +10,42 @@
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;" onbeforecopy="return false;" oncopy="document.selection.empty();" onselect="document.selection.empty();">
 
     <div class="MainContent">
-        <input type="file" id="loadModelButton" />
-        <input type="button" id="translateButton" value="translate" />
-        <input type="button" id="rotateButton" value="rotate" />
-        <input type="button" id="scaleButton" value="scale" />
-        <input type="button" id="mirrorXButton" value="mirrorMeshByX" />
-        <input type="button" id="mirrorYButton" value="mirrorMeshByY" />
-        <input type="button" id="mirrorZButton" value="mirrorMeshByZ" />
+        <div class="MainTitle">
+            <input type="file" id="loadModelButton" />
+
+            <div class="TransfromTitle">
+                <div>
+                    <input type="button" id="translateButton" value="translate" />
+                </div>
+                <div>
+                    <input type="button" id="rotateButton" value="rotate" />
+                </div>
+                <div class="ScaleTitle">
+                    <div>
+                        <input type="button" id="scaleButton" value="scale" />
+                        <input type="checkbox" id="lockProportion" />Lock Scale Proportion
+                    </div>
+                    <div>
+                        <input type="text" id="scaleX" placeholder="scaleX" />
+                        <input type="text" id="scaleY" placeholder="scaleY" />
+                        <input type="text" id="scaleZ" placeholder="scaleZ" />
+                        <input type="text" id="scaleWidth" placeholder="width" />
+                        <input type="text" id="scaleHeight" placeholder="height" />
+                        <input type="text" id="scaleLong" placeholder="long" />
+                    </div>
+                    <input type="button" id="acceptScale" value="AcceptScale" />
+                </div>
+                <div>
+                    <input type="button" id="mirrorXButton" value="mirrorMeshByX" />
+                </div>
+                <div>
+                    <input type="button" id="mirrorYButton" value="mirrorMeshByY" />
+                </div>
+                <div>
+                    <input type="button" id="mirrorZButton" value="mirrorMeshByZ" />
+                </div>
+            </div>
+        </div>
 
         <div class="ThreejsRenderView" id="RenderView"></div>
     </div>

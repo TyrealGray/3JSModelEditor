@@ -9,6 +9,7 @@ define(function (require) {
         SceneController = require('module/SceneController'),
 
         ModelFrame = require('module/component/ModelFrame'),
+        ModelFrameSet = require('module/util/ModelFrameSet'),
 
         GlobalVar = require('module/GlobalVar');
 
@@ -24,7 +25,7 @@ define(function (require) {
 
         sceneController = new SceneController(this._renderer.domElement);
 
-        this._renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+        this._renderer.setSize(window.innerWidth, window.innerHeight);
 
         this._renderer.setClearColor(0xc8c8c8, 0.85);
         this._renderer.shadowMap.enabled = true;

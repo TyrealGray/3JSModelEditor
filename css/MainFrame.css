@@ -2,10 +2,34 @@ body {
     overflow-x: hidden;
 }
 
+input {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+
+.MainTitle {
+    position: relative;
+    height: 100%;
+    width: 19%;
+    float: right;
+}
+
+.TransfromTitle {
+    position: relative;
+    height: 100%;
+}
+
+.ScaleTitle {
+    border: 0.1em solid blue;
+    border-radius: 0.5em;
+    padding: 0.15em;
+    overflow-x: hidden;
+}
+
 .ThreejsRenderView {
-    width: 50%;
-    height: 50%;
-    position: absolute;
+    width: 80%;
+    height: 80%;
+    position: relative;
 }
 
 .ThreejsRenderView > canvas {
