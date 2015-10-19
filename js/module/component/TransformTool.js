@@ -37,7 +37,7 @@ define(function (require) {
             return;
         }
 
-        this._mirror(-1, 1, 1);
+        this._attachedModel.mirrorX();
     };
 
     TransformTool.prototype.mirrorY = function () {
@@ -45,7 +45,7 @@ define(function (require) {
             return;
         }
 
-        this._mirror(1, -1, 1);
+        this._attachedModel.mirrorY();
     };
 
     TransformTool.prototype.mirrorZ = function () {
@@ -53,14 +53,21 @@ define(function (require) {
             return;
         }
 
-        this._mirror(1, 1, -1);
+        this._attachedModel.mirrorZ();
     };
 
-    TransformTool.prototype._mirror = function (x, y, z) {
+    TransformTool.prototype.setScaleValue = function (x, y, z, isLockProportion) {
 
-        this._attachedModel.get().model.geometry.applyMatrix(new THREE.Matrix4().makeScale(x, y, z));
+    };
 
-        this._attachedModel.update();
+    TransformTool.prototype.setScaleByWHL = function (w, h, l, isLockProportion) {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
+            return;
+        }
+
+        var size = this._attachedModel.getSize();
+
+
     };
 
     TransformTool.prototype.setMode = function (mode) {
@@ -94,10 +101,6 @@ define(function (require) {
     };
 
     TransformTool.prototype.onPointerDown = function (event, hitPoint) {
-
-        if (this.TRANSFORM_MODE.TRANSFORM === this._transformMode) {
-            return this._transformControls.onHorizontalModePointerDown(event, hitPoint);
-        }
 
         return this._transformControls.onPointerDown(event);
     };
