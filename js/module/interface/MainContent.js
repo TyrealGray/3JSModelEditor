@@ -7,7 +7,6 @@ define(function (require) {
         Mustache = require('thirdLib/mustachejs/mustache.min'),
 
         MainContentTemplate = require('text!../../../html/MainContent.html'),
-        MainTitleTemplate = require('text!../../../html/MainTitle.html'),
 
         ThreejsRenderer = require('module/ThreejsRenderer'),
 
