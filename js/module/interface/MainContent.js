@@ -7,7 +7,6 @@ define(function (require) {
         Mustache = require('thirdLib/mustachejs/mustache.min'),
 
         MainContentTemplate = require('text!../../../html/MainContent.html'),
-        MainTitleTemplate = require('text!../../../html/MainTitle.html'),
 
         ThreejsRenderer = require('module/ThreejsRenderer'),
 
@@ -45,6 +44,8 @@ define(function (require) {
         GlobalVar.frameRenderer = new ThreejsRenderer();
 
         GlobalVar.frameRenderer.render();
+		
+		GlobalVar.frameRenderer.loadUrlModelFiles('./source/test.stl');
     };
 
     MainContent.prototype._bindPageEvent = function () {
