@@ -133,7 +133,7 @@ define(function (require) {
 
         this._attachedModel.update();
 
-        ModelFrameSet.manageOverlapOtherModel(this._attachedModel);
+        //ModelFrameSet.manageOverlapOtherModel(this._attachedModel);
     };
 
     TransformTool.prototype.update = function () {
