@@ -57,10 +57,15 @@ define(function (require) {
     };
 
     TransformTool.prototype.setScaleValue = function (x, y, z, isLockProportion) {
-
+        this._attachedModel.setScale(x, y, z);
+        this._attachedModel.update();
     };
 
-    TransformTool.prototype.setScaleByWHL = function (w, h, l, isLockProportion) {
+    TransformTool.prototype.getScaleValue = function () {
+        return this._attachedModel.getScale();
+    };
+
+    TransformTool.prototype.setModelWHL = function (w, h, l, isLockProportion) {
         if (!CommonUtil.isDefined(this._attachedModel)) {
             return;
         }
@@ -68,6 +73,10 @@ define(function (require) {
         var size = this._attachedModel.getSize();
 
 
+    };
+
+    TransformTool.prototype.getModelWHL = function () {
+        return this._attachedModel.getSize();
     };
 
     TransformTool.prototype.setMode = function (mode) {
@@ -121,6 +130,7 @@ define(function (require) {
         }
 
         this._transformControls.onPointerUp(event);
+
         this._attachedModel.update();
 
         ModelFrameSet.manageOverlapOtherModel(this._attachedModel);

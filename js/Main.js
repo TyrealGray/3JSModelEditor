@@ -4,9 +4,10 @@ requirejs.config({
     baseUrl: 'js/',
 
     paths: {
+        text: 'thirdLib/requirejs/text',
         GlobalVar: 'module/GlobalVar',
         MainFrame: 'module/MainFrame',
-        THREE: 'thirdLib/threejs/Three.min'
+        THREE: 'thirdLib/threejs/Three.min',
     },
     shim: {
         THREE: {
@@ -29,11 +30,15 @@ define(function (require) {
         mainFrame = new MainFrame();
 
         loadCssFiles();
+
     });
 
     function loadCssFiles() {
         var fileNames = [
-            'css/MainFrame.css'
+            'css/pure-min.css',
+            'css/grids-min.css',
+            'css/menus-min.css',
+            'css/grids-responsive-min.css'
         ];
 
         fileNames.forEach(function (fileName) {

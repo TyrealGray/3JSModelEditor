@@ -8,20 +8,17 @@ define(function (require) {
         CameraManager = require('module/manager/CameraManager'),
         TransformTool = require('module/component/TransformTool'),
 
-        ModelFrameSet = require('module/util/ModelFrameSet'),
-
         GlobalVar = require('module/GlobalVar');
 
     require('thirdLib/threejs/OrbitControls');
 
-    var self = null,
-        cameraTarget = null;
+    var self = null;
 
-    function SceneController(domElement) {
+    function RendererController(domElement) {
 
         this._domElement = domElement;
         this._sceneManager = new SceneManager();
-        this._cameraManager = new CameraManager(this._domElement.parentElement.clientWidth , window.innerHeight , domElement);
+        this._cameraManager = new CameraManager(window.innerWidth, window.innerHeight, domElement);
         this._transformTool = null;
         this._orbitControl = null;
         this._isTouchSensorDown = false;
@@ -30,10 +27,11 @@ define(function (require) {
         this._init();
     }
 
-    SceneController.prototype._init = function () {
+    RendererController.prototype._init = function () {
 
         self = this;
-        GlobalVar.sceneController = this;
+        GlobalVar.cameraManager = this._cameraManager;
+        GlobalVar.sceneManager = this._sceneManager;
 
         this._initTransformControl();
         this._initOrbitControl();
@@ -41,20 +39,20 @@ define(function (require) {
         this._bindRenderDomEvent();
     };
 
-    SceneController.prototype._initTransformControl = function () {
+    RendererController.prototype._initTransformControl = function () {
         this._transformTool = new TransformTool(this._domElement);
 
         GlobalVar.transformTool = this._transformTool;
     };
 
-    SceneController.prototype._initOrbitControl = function () {
+    RendererController.prototype._initOrbitControl = function () {
 
-        this._orbitControl = new THREE.OrbitControls(this._cameraManager.get(), this._domElement);
+        this._orbitControl = new THREE.OrbitControls(this._cameraManager.getRenderInstance(), this._domElement);
         this._orbitControl.enableDamping = true;
-        this._orbitControl.enablePan = false;
+        this._orbitControl.dampingFactor = 0.25;
     };
 
-    SceneController.prototype._bindRenderDomEvent = function () {
+    RendererController.prototype._bindRenderDomEvent = function () {
 
         this._domElement.addEventListener("mousedown", this.onMouseDown, false);
         this._domElement.addEventListener("mousemove", this.onMouseMove, false);
@@ -72,26 +70,19 @@ define(function (require) {
         this._domElement.addEventListener("touchleave", this.onMouseUp, false);
     };
 
-    SceneController.prototype.spawnModel = function (modelFrame) {
-        ModelFrameSet.addModelFrame(modelFrame);
-        this._sceneManager.addMesh(modelFrame.get().model);
-        this._sceneManager.addStaticMesh(modelFrame.get().box);
-        modelFrame.update();
+    RendererController.prototype.spawnObject = function (object) {
+        this._sceneManager.addMesh(object);
     };
 
-    SceneController.prototype.spawnMesh = function (mesh) {
-        this._sceneManager.addStaticMesh(mesh);
-    };
-
-    SceneController.prototype.setCameraLookAt = function (position) {
+    RendererController.prototype.setCameraLookAt = function (position) {
         this._cameraManager.lookAt(position);
     };
 
-    SceneController.prototype.attachTransformControl = function (mesh) {
+    RendererController.prototype.attachTransformControl = function (mesh) {
         this._transformTool.attach(mesh);
     };
 
-    SceneController.prototype.onMouseMove = function (event) {
+    RendererController.prototype.onMouseMove = function (event) {
         if (!self._isTouchSensorDown) {
             return;
         }
@@ -103,16 +94,13 @@ define(function (require) {
         }
     };
 
-    SceneController.prototype.onMouseUp = function (event) {
+    RendererController.prototype.onMouseUp = function (event) {
         self._isTouchSensorDown = false;
         self._transformTool.onPointerUp(event);
         self._orbitControl.onMouseUp(event);
-        if (null !== cameraTarget) {
-            self._orbitControl.target = cameraTarget;
-        }
     };
 
-    SceneController.prototype.onMouseDown = function (event) {
+    RendererController.prototype.onMouseDown = function (event) {
 
         self._isTouchSensorDown = true;
 
@@ -123,7 +111,7 @@ define(function (require) {
         }
     };
 
-    SceneController.prototype.onTouchStart = function (event) {
+    RendererController.prototype.onTouchStart = function (event) {
         self._isTouchSensorDown = true;
 
         self._isTransformStatus = self._isHitModifyMeshObject(event);
@@ -133,13 +121,12 @@ define(function (require) {
         }
     };
 
-    SceneController.prototype._isHitModifyMeshObject = function (event) {
+    RendererController.prototype._isHitModifyMeshObject = function (event) {
         var hitResult = this._sceneManager.getHitResultBy(event, this._sceneManager.HIT_RESULT_CHANNEL.MESH);
 
         if (0 < hitResult.length) {
 
-            this._transformTool.attachModel(ModelFrameSet.getModelFrame(hitResult[0].object));
-            cameraTarget = hitResult[0].object.position;
+            this._transformTool.attach(hitResult[0].object);
         }
 
         this._isTransformStatus = this._transformTool.onPointerDown(event, (0 < hitResult.length) ? hitResult[0].point : null);
@@ -147,7 +134,7 @@ define(function (require) {
         return this._isTransformStatus;
     };
 
-    SceneController.prototype.onTouchMove = function (event) {
+    RendererController.prototype.onTouchMove = function (event) {
         if (!self._isTouchSensorDown) {
             return;
         }
@@ -160,44 +147,33 @@ define(function (require) {
 
     };
 
-    SceneController.prototype.onTouchEnd = function (event) {
+    RendererController.prototype.onTouchEnd = function (event) {
         self._isTouchSensorDown = false;
         self._transformTool.onPointerUp(event);
         self._orbitControl.onTouchEnd(event);
-        if (null !== cameraTarget) {
-            self._orbitControl.target = cameraTarget;
-        }
     };
 
-    SceneController.prototype.onMouseWheel = function (event) {
+    RendererController.prototype.onMouseWheel = function (event) {
         self._orbitControl.onMouseWheel(event);
     };
 
-    SceneController.prototype.update = function () {
+    RendererController.prototype.update = function () {
         this._transformTool.update();
         this._orbitControl.update();
     };
 
-    SceneController.prototype.getCameraManager = function () {
-        return this._cameraManager;
-    };
-
-    SceneController.prototype.getSceneManager = function () {
-        return this._sceneManager;
-    };
-
-    SceneController.prototype.getRenderTarget = function () {
+    RendererController.prototype.getRenderTarget = function () {
         return {
-            scene: this.getSceneManager().get(),
-            camera: this.getCameraManager().get()
+            scene: this._sceneManager.getRenderInstance(),
+            camera: this._cameraManager.getRenderInstance()
         };
     };
 
-    SceneController.prototype.onWindowResize = function () {
-        this._cameraManager.get().aspect = this._domElement.parentElement.clientWidth / (window.innerHeight);
-        this._cameraManager.get().updateProjectionMatrix();
+    RendererController.prototype.onWindowResize = function () {
+        this._cameraManager.getRenderInstance().aspect = window.innerWidth / window.innerHeight;
+        this._cameraManager.getRenderInstance().updateProjectionMatrix();
     };
 
-    return SceneController;
+    return RendererController;
 
 });

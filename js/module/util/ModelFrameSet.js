@@ -69,8 +69,6 @@ define(function (require, exports) {
 
                 modelMap[x].get().model.position.copy(tempVector);
 
-                console.log('model x: ' + tempVector.x + ', z: ' + tempVector.z);
-
                 modelMap[x].update();
 
             } while (null !== modelMap[x].checkOverlap(modelFrame));
