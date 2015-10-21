@@ -21,7 +21,7 @@ define(function (require) {
 
         this._domElement = domElement;
         this._sceneManager = new SceneManager();
-        this._cameraManager = new CameraManager(window.innerWidth, window.innerHeight, domElement);
+        this._cameraManager = new CameraManager(this._domElement.parentElement.clientWidth , window.innerHeight , domElement);
         this._transformTool = null;
         this._orbitControl = null;
         this._isTouchSensorDown = false;
@@ -194,7 +194,7 @@ define(function (require) {
     };
 
     SceneController.prototype.onWindowResize = function () {
-        this._cameraManager.get().aspect = window.innerWidth / window.innerHeight;
+        this._cameraManager.get().aspect = this._domElement.parentElement.clientWidth / (window.innerHeight);
         this._cameraManager.get().updateProjectionMatrix();
     };
 

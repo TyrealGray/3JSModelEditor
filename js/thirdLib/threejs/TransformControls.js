@@ -1038,9 +1038,9 @@ define(function (require) {
 
                         point.applyMatrix4(tempMatrix.getInverse(worldRotationMatrix));
 
-                        if (scope.axis === "X") scope.object.scale.x = oldScale.x * (0 >= (1 + point.x / 50)) ? 0.01 : (1 + point.x / 50);
-                        if (scope.axis === "Y") scope.object.scale.y = oldScale.y * (0 >= (1 + point.y / 50)) ? 0.01 : (1 + point.y / 50);
-                        if (scope.axis === "Z") scope.object.scale.z = oldScale.z * (0 >= (1 + point.z / 50)) ? 0.01 : (1 + point.z / 50);
+                        if (scope.axis === "X") scope.object.scale.x = oldScale.x * ((0 >= (1 + point.x / 50)) ? 0.01 : (1 + point.x / 50));
+                        if (scope.axis === "Y") scope.object.scale.y = oldScale.y * ((0 >= (1 + point.y / 50)) ? 0.01 : (1 + point.y / 50));
+                        if (scope.axis === "Z") scope.object.scale.z = oldScale.z * ((0 >= (1 + point.z / 50)) ? 0.01 : (1 + point.z / 50));
 
                     }
 
@@ -1122,6 +1122,7 @@ define(function (require) {
 
                     tempQuaternion.multiplyQuaternions(tempQuaternion, quaternionXYZ);
 
+                    //scope.object.geometry.applyMatrix(new THREE.Matrix4().makeRotationFromQuaternion(tempQuaternion));
                     scope.object.quaternion.copy(tempQuaternion);
 
                 }

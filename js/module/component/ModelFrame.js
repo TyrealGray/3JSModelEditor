@@ -93,6 +93,14 @@ define(function (require) {
         this.update();
     };
 
+    ModelFrame.prototype.setScale = function (x, y, z) {
+        this.getScale().set(x, y, z);
+    };
+
+    ModelFrame.prototype.getScale = function () {
+        return this._model.scale;
+    };
+
     ModelFrame.prototype.getSize = function () {
 
         this.update();
