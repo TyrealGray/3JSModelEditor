@@ -21,10 +21,11 @@ define(function (require) {
 
         this._domElement = domElement;
         this._sceneManager = new SceneManager();
-        this._cameraManager = new CameraManager(this._domElement.parentElement.clientWidth , window.innerHeight , domElement);
+        this._cameraManager = new CameraManager(this._domElement.parentElement.clientWidth, window.innerHeight, domElement);
         this._transformTool = null;
         this._orbitControl = null;
         this._isTouchSensorDown = false;
+        this._isMouseMove = false;
         this._isTransformStatus = false;
 
         this._init();
@@ -91,45 +92,23 @@ define(function (require) {
         this._transformTool.attach(mesh);
     };
 
-    SceneController.prototype.onMouseMove = function (event) {
-        if (!self._isTouchSensorDown) {
-            return;
-        }
-
-        if (self._isTransformStatus) {
-            self._transformTool.onPointerMove(event);
-        } else {
-            self._orbitControl.onMouseMove(event);
-        }
-    };
-
-    SceneController.prototype.onMouseUp = function (event) {
-        self._isTouchSensorDown = false;
-        self._transformTool.onPointerUp(event);
-        self._orbitControl.onMouseUp(event);
-        if (null !== cameraTarget) {
-            self._orbitControl.target = cameraTarget;
-        }
-    };
-
     SceneController.prototype.onMouseDown = function (event) {
 
-        self._isTouchSensorDown = true;
-
-        self._isTransformStatus = self._isHitModifyMeshObject(event);
-
-        if (!self._isTransformStatus) {
-            self._orbitControl.onMouseDown(event);
-        }
+        self._onOperatingStartEvent(event, 'onMouseDown');
     };
 
     SceneController.prototype.onTouchStart = function (event) {
-        self._isTouchSensorDown = true;
 
-        self._isTransformStatus = self._isHitModifyMeshObject(event);
+        self._onOperatingStartEvent(event, 'onTouchStart');
+    };
 
-        if (!self._isTransformStatus) {
-            self._orbitControl.onTouchStart(event);
+    SceneController.prototype._onOperatingStartEvent = function (event, operateMode) {
+        this._isTouchSensorDown = true;
+
+        this._isHitModifyMeshObject(event);
+
+        if (!this._isTransformStatus) {
+            this._onOrbitControlOperating(event, operateMode);
         }
     };
 
@@ -143,34 +122,84 @@ define(function (require) {
         }
 
         this._isTransformStatus = this._transformTool.onPointerDown(event, (0 < hitResult.length) ? hitResult[0].point : null);
+    };
 
-        return this._isTransformStatus;
+    SceneController.prototype.onMouseMove = function (event) {
+
+        self._onOperatingMoveEvent(event, 'onMouseMove');
     };
 
     SceneController.prototype.onTouchMove = function (event) {
-        if (!self._isTouchSensorDown) {
+
+        self._onOperatingMoveEvent(event, 'onTouchMove');
+    };
+
+    SceneController.prototype._onOperatingMoveEvent = function (event, operateMode) {
+        if (!this._isTouchSensorDown) {
             return;
         }
 
-        if (self._isTransformStatus) {
-            self._transformTool.onPointerMove(event);
-        } else {
-            self._orbitControl.onTouchMove(event);
-        }
+        this._isMouseMove = true;
 
+        if (this._isTransformStatus) {
+            this._transformTool.onPointerMove(event);
+        } else {
+            this._onOrbitControlOperating(event, operateMode);
+        }
+    };
+
+    SceneController.prototype.onMouseUp = function (event) {
+
+        self._onTransfromToolOperatingEnd(event, 'onMouseUp');
     };
 
     SceneController.prototype.onTouchEnd = function (event) {
-        self._isTouchSensorDown = false;
-        self._transformTool.onPointerUp(event);
-        self._orbitControl.onTouchEnd(event);
-        if (null !== cameraTarget) {
-            self._orbitControl.target = cameraTarget;
-        }
+
+        self._onTransfromToolOperatingEnd(event, 'onTouchEnd');
     };
 
     SceneController.prototype.onMouseWheel = function (event) {
         self._orbitControl.onMouseWheel(event);
+    };
+
+    SceneController.prototype._onTransfromToolOperatingEnd = function (event, operateMode) {
+        if (this._isTransformStatus && !self._isMouseMove) {
+            if (null !== cameraTarget) {
+                self._orbitControl.target = cameraTarget;
+            }
+        }
+
+        this._isMouseMove = false;
+        this._isTouchSensorDown = false;
+        this._transformTool.onPointerUp(event);
+        this._onOrbitControlOperating(event, operateMode);
+    };
+
+    SceneController.prototype._onOrbitControlOperating = function (event, operateMode) {
+
+        switch (operateMode) {
+
+        case 'onMouseMove':
+            this._orbitControl.onMouseMove(event);
+            break;
+        case 'onTouchMove':
+            this._orbitControl.onTouchMove(event);
+            break;
+        case 'onTouchStart':
+            this._orbitControl.onTouchStart(event);
+            break;
+        case 'onMouseDown':
+            this._orbitControl.onMouseDown(event);
+            break;
+        case 'onMouseUp':
+            this._orbitControl.onMouseUp(event);
+            break;
+        case 'onTouchEnd':
+            this._orbitControl.onTouchEnd(event);
+            break;
+        default:
+            break;
+        }
     };
 
     SceneController.prototype.update = function () {

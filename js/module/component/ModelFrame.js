@@ -10,6 +10,12 @@ define(function (require) {
 
     function ModelFrame(modelDetail) {
 
+        this._axisDirection = {
+            x: 1,
+            y: 1,
+            z: 1
+        };
+
         this._model = new THREE.Mesh(modelDetail.geometry, new THREE.MeshLambertMaterial({
             color: 0xc8c8c8
         }));
@@ -67,6 +73,8 @@ define(function (require) {
             return;
         }
 
+        this._axisDirection.x *= (-1);
+
         this._mirror(-1, 1, 1);
     };
 
@@ -75,6 +83,8 @@ define(function (require) {
             return;
         }
 
+        this._axisDirection.y *= (-1);
+
         this._mirror(1, -1, 1);
     };
 
@@ -82,6 +92,8 @@ define(function (require) {
         if (!CommonUtil.isDefined(this._model)) {
             return;
         }
+
+        this._axisDirection.z *= (-1);
 
         this._mirror(1, 1, -1);
     };
@@ -95,6 +107,7 @@ define(function (require) {
 
     ModelFrame.prototype.setScale = function (x, y, z) {
         this.getScale().set(x, y, z);
+        this.update();
     };
 
     ModelFrame.prototype.getScale = function () {
@@ -106,6 +119,18 @@ define(function (require) {
         this.update();
 
         return this._boundingBox.box.size();
+    };
+
+    ModelFrame.prototype.reset = function () {
+
+        this.setScale(1, 1, 1);
+        this._model.rotation.set(0, 0, 0);
+        this._mirror(this._axisDirection.x, this._axisDirection.y, this._axisDirection.z);
+        this._axisDirection = {
+            x: 1,
+            y: 1,
+            z: 1
+        };
     };
 
     ModelFrame.prototype.update = function () {
@@ -127,6 +152,24 @@ define(function (require) {
             model: this._model,
             box: this._boundingBox
         };
+    };
+
+    ModelFrame.prototype.selected = function () {
+        this._model.material.transparent = true;
+        this._model.material.opacity = 0.8;
+
+        this._model.material.setValues({
+            color: 0x0000a8
+        });
+    };
+
+    ModelFrame.prototype.unselected = function () {
+        this._model.material.transparent = false;
+        this._model.material.opacity = 1.0;
+
+        this._model.material.setValues({
+            color: 0xc8c8c8
+        });
     };
 
     return ModelFrame;
