@@ -56,26 +56,69 @@ define(function (require) {
         this._attachedModel.mirrorZ();
     };
 
-    TransformTool.prototype.setScaleValue = function (x, y, z, isLockProportion) {
-        this._attachedModel.setScale(x, y, z);
-        this._attachedModel.update();
-    };
-
-    TransformTool.prototype.getScaleValue = function () {
-        return this._attachedModel.getScale();
-    };
-
-    TransformTool.prototype.setModelWHL = function (w, h, l, isLockProportion) {
+    TransformTool.prototype.resetModel = function () {
         if (!CommonUtil.isDefined(this._attachedModel)) {
             return;
         }
 
-        var size = this._attachedModel.getSize();
-
-
+        this._attachedModel.reset();
     };
 
-    TransformTool.prototype.getModelWHL = function () {
+    TransformTool.prototype.setModelScaleValue = function (x, y, z, isLockProportion) {
+
+        var scale = this.getModelScaleValue();
+
+        if (isLockProportion) {
+
+            if (null !== x) {
+                y = scale.y * (x / scale.x);
+                z = scale.z * (x / scale.x);
+            } else if (null !== y) {
+                x = scale.x * (y / scale.y);
+                z = scale.z * (y / scale.y);
+            } else {
+                x = scale.x * (z / scale.z);
+                y = scale.y * (z / scale.z);
+            }
+        }
+
+        this._attachedModel.setScale(x, y, z);
+        this._attachedModel.update();
+    };
+
+    TransformTool.prototype.getModelScaleValue = function () {
+        return this._attachedModel.getScale();
+    };
+
+    TransformTool.prototype.setModelLWH = function (l, w, h, isLockProportion) {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
+            return;
+        }
+        var size = this.getModelLWH(),
+            scale = this.getModelScaleValue();
+
+        var scalePX = scale.x / size.x,
+            scalePY = scale.y / size.y,
+            scalePZ = scale.z / size.z;
+
+        if (isLockProportion) {
+
+            if (null !== l) {
+                h = size.y * (l / size.x);
+                w = size.z * (l / size.x);
+            } else if (null !== h) {
+                l = size.x * (h / size.y);
+                w = size.z * (h / size.y);
+            } else {
+                h = size.y * (w / size.z);
+                l = size.x * (w / size.z);
+            }
+        }
+
+        this.setModelScaleValue(l * scalePX, h * scalePY, w * scalePZ);
+    };
+
+    TransformTool.prototype.getModelLWH = function () {
         return this._attachedModel.getSize();
     };
 
@@ -105,8 +148,14 @@ define(function (require) {
     };
 
     TransformTool.prototype.attachModel = function (model) {
+
+        if (CommonUtil.isDefined(this._attachedModel)) {
+            this._attachedModel.unselected();
+        }
+
         this._transformControls.attach(model.get().model);
         this._attachedModel = model;
+        this._attachedModel.selected();
     };
 
     TransformTool.prototype.onPointerDown = function (event, hitPoint) {

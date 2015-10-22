@@ -18,6 +18,9 @@ define(function (require, exports) {
                 }, {
                     itemID: 'rotateButton',
                     itemContent: 'rotate'
+                }, {
+                    itemID: 'scaleButton',
+                    itemContent: 'scale'
                 }, getScaleMenuContent(), {
                     itemID: 'mirrorXButton',
                     itemContent: 'mirrorX'
@@ -27,6 +30,9 @@ define(function (require, exports) {
                 }, {
                     itemID: 'mirrorZButton',
                     itemContent: 'mirrorZ'
+                }, {
+                    itemID: 'resetButton',
+                    itemContent: 'reset'
                 }]
             })
         };
@@ -35,29 +41,29 @@ define(function (require, exports) {
     function getScaleMenuContent() {
         return {
             itemID: 'scaleMenu',
-            itemContent: 'scaleMode',
+            itemContent: 'scaleMore',
             itemChildrens: Mustache.render(MenuItemTemplate, {
                 menuItems: [{
-                    itemID: 'scaleButton',
-                    itemContent: 'scale'
-                }, {
                     itemID: 'scaleXMenu',
-                    itemContent: '<input type="text" id="scaleX" placeholder="scaleX" />'
+                    itemContent: '<label for="scaleX">scaleX</label> <input type="text" id="scaleX" placeholder="scaleX" />'
                 }, {
                     itemID: 'scaleYMenu',
-                    itemContent: '<input type="text" id="scaleY" placeholder="scaleY" />'
+                    itemContent: '<label for="scaleY">scaleY</label> <input type="text" id="scaleY" placeholder="scaleY" />'
                 }, {
                     itemID: 'scaleZMenu',
-                    itemContent: '<input type="text" id="scaleZ" placeholder="scaleZ" />'
-                }, {
-                    itemID: 'widthMenu',
-                    itemContent: '<input type="text" id="width" placeholder="width" />'
-                }, {
-                    itemID: 'heightMenu',
-                    itemContent: '<input type="text" id="height" placeholder="height" />'
+                    itemContent: '<label for="scaleZ">scaleZ</label> <input type="text" id="scaleZ" placeholder="scaleZ" />'
                 }, {
                     itemID: 'longMenu',
-                    itemContent: '<input type="text" id="long" placeholder="long" />'
+                    itemContent: '<label for="long">long(mm)</label> <input type="text" id="long" placeholder="long" />'
+                }, {
+                    itemID: 'widthMenu',
+                    itemContent: '<label for="width">width(mm)</label> <input type="text" id="width" placeholder="width" />'
+                }, {
+                    itemID: 'heightMenu',
+                    itemContent: '<label for="height">height(mm)</label> <input type="text" id="height" placeholder="height" />'
+                }, {
+                    itemID: 'lockProportionMenu',
+                    itemContent: '<input type="checkbox" id="lockProportion" checked="true"/> Lock Scale Proportion'
                 }]
             })
         };

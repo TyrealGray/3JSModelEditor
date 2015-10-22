@@ -50,52 +50,7 @@ define(function (require) {
 
     MainContent.prototype._bindPageEvent = function () {
 
-        var frameRenderer = GlobalVar.frameRenderer;
-
-        document.getElementById('loadModelButton').addEventListener('change', function (uploader) {
-            frameRenderer.loadLocalModelFiles(uploader.target.files);
-        });
-
-        document.getElementById('translateButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.setMode(GlobalVar.transformTool.TRANSFORM_MODE.TRANSFORM);
-        });
-
-        document.getElementById('rotateButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.setMode(GlobalVar.transformTool.TRANSFORM_MODE.ROTATE);
-        });
-        document.getElementById('scaleButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.setMode(GlobalVar.transformTool.TRANSFORM_MODE.SCALE);
-        });
-
-        document.getElementById('mirrorXButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.mirrorX();
-        });
-
-        document.getElementById('mirrorYButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.mirrorY();
-        });
-
-        document.getElementById('mirrorZButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.mirrorZ();
-        });
-//
-//        document.getElementById('acceptScale').addEventListener('click', function (event) {
-//
-//            var x = parseFloat(document.getElementById('scaleX').value),
-//                y = parseFloat(document.getElementById('scaleY').value),
-//                z = parseFloat(document.getElementById('scaleZ').value);
-//
-//            if (!checkIsLegalScale(x) && !checkIsLegalScale(y) && !checkIsLegalScale(z)) {
-//                alert('缩放值非法');
-//                return;
-//            }
-//
-//            GlobalVar.transformTool.setScaleValue(x, y, z);
-//        });
-//
-//        function checkIsLegalScale(value) {
-//            return !isNaN(value) && (0 < value);
-//        }
+        this._mainTitle.bindTitleEvent();
     };
 
     MainContent.prototype.onWindowResize = function () {

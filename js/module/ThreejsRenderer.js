@@ -25,7 +25,6 @@ define(function (require) {
 
         document.getElementById('RenderView').appendChild(this._renderer.domElement);
 
-        //        this._renderer.setSize(window.innerWidth, window.innerHeight);
         sceneController = new SceneController(this._renderer.domElement);
 
         this._renderer.setSize(this._renderer.domElement.parentElement.clientWidth, window.innerHeight * 0.95);
@@ -50,7 +49,7 @@ define(function (require) {
 
     ThreejsRenderer.prototype.onModelLoad = function (modelGeometry) {
         if (!CommonUtil.isDefined(modelGeometry)) {
-            console.error('loadLocalFiles error');
+            console.error('loadModelFile error');
             return;
         }
 
@@ -61,13 +60,13 @@ define(function (require) {
         sceneController.spawnModel(model);
 
         GlobalVar.transformTool.attachModel(model);
+
+        ModelFrameSet.manageOverlapOtherModel(model);
     };
 
     ThreejsRenderer.prototype.onWindowResize = function () {
 
         sceneController.onWindowResize();
-
-        //        this._renderer.setSize(window.innerWidth, window.innerHeight);
 
         this._renderer.setSize(this._renderer.domElement.parentElement.clientWidth, window.innerHeight * 0.95);
 

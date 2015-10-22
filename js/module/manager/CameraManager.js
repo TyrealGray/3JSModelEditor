@@ -6,7 +6,7 @@ define(function (require) {
 
     function CameraManager(viewportWidth, viewportHeight, domElement) {
 
-        this._camera = new THREE.PerspectiveCamera(75, viewportWidth / viewportHeight, 0.1, 8000);
+        this._camera = new THREE.PerspectiveCamera(75, viewportWidth / viewportHeight, 0.1, 800);
         this._viewport = domElement;
         this._init();
     }
