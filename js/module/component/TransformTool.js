@@ -64,6 +64,16 @@ define(function (require) {
         this._attachedModel.reset();
     };
 
+    TransformTool.prototype.deleteModel = function () {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
+            return;
+        }
+
+        GlobalVar.sceneController.disposeModel(this._attachedModel);
+
+        this._attachedModel = null;
+    };
+
     TransformTool.prototype.setModelScaleValue = function (x, y, z, isLockProportion) {
 
         var scale = this.getModelScaleValue();

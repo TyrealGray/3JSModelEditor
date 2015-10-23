@@ -24,7 +24,7 @@ define(function (require) {
 
         var gridHelper = new THREE.GridHelper(80, 10);
 
-        gridHelper.setColors(0x00c8c8, 0x0000c8);
+        gridHelper.setColors(0xd8d8d8, 0x666888);
 
         this.addStaticMesh(gridHelper);
 

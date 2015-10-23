@@ -16,8 +16,6 @@ define(function (require) {
 
     function MainContent() {
 
-        this._mainTitle = null;
-
         this._init();
     }
 
@@ -32,10 +30,8 @@ define(function (require) {
 
     MainContent.prototype._initPage = function () {
 
-        this._mainTitle = new MainTitle();
-
         document.getElementById('mainContent').innerHTML = Mustache.render(MainContentTemplate, {
-            mainTitle: this._mainTitle.getMenuContent()
+            mainTitle: MainTitle.getMenuContent()
         });
     };
 
@@ -50,7 +46,7 @@ define(function (require) {
 
     MainContent.prototype._bindPageEvent = function () {
 
-        this._mainTitle.bindTitleEvent();
+        MainTitle.bindEvent();
     };
 
     MainContent.prototype.onWindowResize = function () {

@@ -39,7 +39,7 @@ define(function (require) {
         this._initTransformControl();
         this._initOrbitControl();
 
-        this._bindRenderDomEvent();
+        this._bindEvent();
     };
 
     SceneController.prototype._initTransformControl = function () {
@@ -55,7 +55,7 @@ define(function (require) {
         this._orbitControl.enablePan = false;
     };
 
-    SceneController.prototype._bindRenderDomEvent = function () {
+    SceneController.prototype._bindEvent = function () {
 
         this._domElement.addEventListener("mousedown", this.onMouseDown, false);
         this._domElement.addEventListener("mousemove", this.onMouseMove, false);
@@ -78,6 +78,12 @@ define(function (require) {
         this._sceneManager.addMesh(modelFrame.get().model);
         this._sceneManager.addStaticMesh(modelFrame.get().box);
         modelFrame.update();
+    };
+
+    SceneController.prototype.disposeModel = function (modelFrame) {
+        this._sceneManager.removeMesh(modelFrame.get().model);
+        this._sceneManager.removeStaticMesh(modelFrame.get().box);
+        ModelFrameSet.removeModelFrame(modelFrame);
     };
 
     SceneController.prototype.spawnMesh = function (mesh) {
@@ -150,19 +156,19 @@ define(function (require) {
 
     SceneController.prototype.onMouseUp = function (event) {
 
-        self._onTransfromToolOperatingEnd(event, 'onMouseUp');
+        self._onOperatingEventEnd(event, 'onMouseUp');
     };
 
     SceneController.prototype.onTouchEnd = function (event) {
 
-        self._onTransfromToolOperatingEnd(event, 'onTouchEnd');
+        self._onOperatingEventEnd(event, 'onTouchEnd');
     };
 
     SceneController.prototype.onMouseWheel = function (event) {
         self._orbitControl.onMouseWheel(event);
     };
 
-    SceneController.prototype._onTransfromToolOperatingEnd = function (event, operateMode) {
+    SceneController.prototype._onOperatingEventEnd = function (event, operateMode) {
         if (this._isTransformStatus && !self._isMouseMove) {
             if (null !== cameraTarget) {
                 self._orbitControl.target = cameraTarget;
