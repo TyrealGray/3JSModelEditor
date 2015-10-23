@@ -22,7 +22,7 @@ define(function (require, exports) {
     }
 
     function removeModelFrame(modelFrame) {
-        if (!CommonUtil.isDefined(modelMap[modelFrame.get().model.name])) {
+        if (CommonUtil.isDefined(modelMap[modelFrame.get().model.name])) {
             modelMap[modelFrame.get().model.name].dispose();
             modelMap[modelFrame.get().model.name] = null;
             delete modelMap[modelFrame.get().model.name];

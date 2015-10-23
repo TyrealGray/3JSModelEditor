@@ -45,7 +45,7 @@ define(function (require) {
     };
 
     ModelFrame.prototype._initBox = function () {
-        this._boundingBox = new THREE.BoundingBoxHelper(this._model, 0xffff00);
+        this._boundingBox = new THREE.BoundingBoxHelper(this._model, 0x281858);
         this._boundingBox.update();
     };
 
@@ -136,7 +136,10 @@ define(function (require) {
     ModelFrame.prototype.update = function () {
 
         this._model.updateMatrix();
+
         this._boundingBox.update();
+
+        this._boundingBox.box.setFromObject(this._model);
     };
 
     ModelFrame.prototype.dispose = function () {
@@ -159,7 +162,7 @@ define(function (require) {
         this._model.material.opacity = 0.8;
 
         this._model.material.setValues({
-            color: 0x0000a8
+            color: 0x005858
         });
     };
 
