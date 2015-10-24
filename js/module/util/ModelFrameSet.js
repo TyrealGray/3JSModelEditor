@@ -22,7 +22,7 @@ define(function (require, exports) {
     }
 
     function removeModelFrame(modelFrame) {
-        if (!CommonUtil.isDefined(modelMap[modelFrame.get().model.name])) {
+        if (CommonUtil.isDefined(modelMap[modelFrame.get().model.name])) {
             modelMap[modelFrame.get().model.name].dispose();
             modelMap[modelFrame.get().model.name] = null;
             delete modelMap[modelFrame.get().model.name];
@@ -68,8 +68,6 @@ define(function (require, exports) {
                 tempVector.add(modelMap[x].get().model.position);
 
                 modelMap[x].get().model.position.copy(tempVector);
-
-                console.log('model x: ' + tempVector.x + ', z: ' + tempVector.z);
 
                 modelMap[x].update();
 

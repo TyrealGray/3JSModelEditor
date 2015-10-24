@@ -59,7 +59,7 @@ define(function (require, exports) {
 
         });
 
-        reader.readAsBinaryString(file);
+        reader.readAsArrayBuffer(file); //hack for IE browser,let's assume IE is a browser
     }
 
     function loadServerUrl(url, onModelReady) {

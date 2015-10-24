@@ -1122,6 +1122,7 @@ define(function (require) {
 
                     tempQuaternion.multiplyQuaternions(tempQuaternion, quaternionXYZ);
 
+                    //scope.object.geometry.applyMatrix(new THREE.Matrix4().makeRotationFromQuaternion(tempQuaternion));
                     scope.object.quaternion.copy(tempQuaternion);
 
                 }

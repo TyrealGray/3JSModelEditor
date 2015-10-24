@@ -1,4 +1,4 @@
-/* global define,window,document,requestAnimationFrame,console */
+/* global define,window,document,requestAnimationFrame,console,setTimeout */
 define(function (require) {
     'use strict';
 
@@ -23,14 +23,19 @@ define(function (require) {
 
     ThreejsRenderer.prototype._init = function () {
 
+        document.getElementById('RenderView').appendChild(this._renderer.domElement);
+
         sceneController = new SceneController(this._renderer.domElement);
 
-        this._renderer.setSize(window.innerWidth, window.innerHeight);
+        this._renderer.setSize(this._renderer.domElement.parentElement.clientWidth, window.innerHeight * 0.95);
 
         this._renderer.setClearColor(0xc8c8c8, 0.85);
         this._renderer.shadowMap.enabled = true;
 
-        document.getElementById('RenderView').appendChild(this._renderer.domElement);
+        setTimeout(function () {
+            GlobalVar.frameRenderer.onWindowResize();
+        }, 600);
+
     };
 
     ThreejsRenderer.prototype.loadLocalModelFiles = function (files) {
@@ -44,7 +49,7 @@ define(function (require) {
 
     ThreejsRenderer.prototype.onModelLoad = function (modelGeometry) {
         if (!CommonUtil.isDefined(modelGeometry)) {
-            console.error('loadLocalFiles error');
+            console.error('loadModelFile error');
             return;
         }
 
@@ -55,13 +60,15 @@ define(function (require) {
         sceneController.spawnModel(model);
 
         GlobalVar.transformTool.attachModel(model);
+
+        ModelFrameSet.manageOverlapOtherModel(model);
     };
 
     ThreejsRenderer.prototype.onWindowResize = function () {
 
         sceneController.onWindowResize();
 
-        this._renderer.setSize(window.innerWidth, window.innerHeight);
+        this._renderer.setSize(this._renderer.domElement.parentElement.clientWidth, window.innerHeight * 0.95);
 
         this.render();
     };

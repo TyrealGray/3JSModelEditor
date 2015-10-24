@@ -22,14 +22,18 @@ define(function (require) {
 
     SceneManager.prototype._init = function () {
 
-        this.addStaticMesh(new THREE.GridHelper(80, 80));
+        var gridHelper = new THREE.GridHelper(80, 10);
 
-        var light = new THREE.DirectionalLight(0xffffff, 2);
+        gridHelper.setColors(0xd8d8d8, 0x666888);
+
+        this.addStaticMesh(gridHelper);
+
+        var light = new THREE.DirectionalLight(0xffffff, 1.89);
         light.position.set(1, 1, 1);
 
         this.addLight(light);
 
-        light = new THREE.DirectionalLight(0xffffff, 0.85);
+        light = new THREE.DirectionalLight(0xffffff, 1.2);
         light.position.set(-1, -1, -1);
 
         this.addLight(light);

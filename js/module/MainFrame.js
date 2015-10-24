@@ -1,55 +1,30 @@
-/* global define,document */
+/* global define,document, alert */
 define(function (require) {
     'use strict';
 
-    var ThreejsRenderer = require('module/ThreejsRenderer'),
+    var CommonUtil = require('lib/CommonUtil'),
 
-        GlobalVar = require('module/GlobalVar');
+        MainContent = require('module/interface/MainContent');
 
     function MainFrame() {
 
-        GlobalVar.frameRenderer = new ThreejsRenderer();
+        this._mainContent = null;
 
         this._init();
     }
 
     MainFrame.prototype._init = function () {
 
-        var frameRenderer = GlobalVar.frameRenderer;
-
-        frameRenderer.render();
-
-        document.getElementById('loadModelButton').addEventListener('change', function (uploader) {
-            frameRenderer.loadLocalModelFiles(uploader.target.files);
-        });
-
-        document.getElementById('translateButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.setMode(GlobalVar.transformTool.TRANSFORM_MODE.TRANSFORM);
-        });
-
-        document.getElementById('rotateButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.setMode(GlobalVar.transformTool.TRANSFORM_MODE.ROTATE);
-        });
-        document.getElementById('scaleButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.setMode(GlobalVar.transformTool.TRANSFORM_MODE.SCALE);
-        });
-
-        document.getElementById('mirrorXButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.mirrorX();
-        });
-
-        document.getElementById('mirrorYButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.mirrorY();
-        });
-
-        document.getElementById('mirrorZButton').addEventListener('click', function (event) {
-            GlobalVar.transformTool.mirrorZ();
-        });
-
+        this._mainContent = new MainContent();
     };
 
     MainFrame.prototype.onWindowResize = function () {
-        GlobalVar.frameRenderer.onWindowResize();
+
+        if (!CommonUtil.isDefined(this._mainContent)) {
+            return;
+        }
+
+        this._mainContent.onWindowResize();
     };
 
     return MainFrame;
