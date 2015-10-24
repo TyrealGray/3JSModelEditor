@@ -22,10 +22,18 @@ define(function (require) {
 
         this._boundingBox = null;
 
-        this._init(modelDetail);
+        this._init();
     }
 
-    ModelFrame.prototype._init = function (modelDetail) {
+    ModelFrame.prototype.clone = function () {
+        var cloneGeometry = this._model.geometry.clone();
+
+        return new ModelFrame({
+            geometry: cloneGeometry
+        });
+    };
+
+    ModelFrame.prototype._init = function () {
 
         this._initModel();
 

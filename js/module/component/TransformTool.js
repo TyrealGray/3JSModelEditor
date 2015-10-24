@@ -74,6 +74,15 @@ define(function (require) {
         this._attachedModel = null;
     };
 
+    TransformTool.prototype.copyModel = function () {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
+            return;
+        }
+
+        GlobalVar.sceneController.spawnModel(this._attachedModel.clone());
+
+    };
+
     TransformTool.prototype.setModelScaleValue = function (x, y, z, isLockProportion) {
 
         var scale = this.getModelScaleValue();
