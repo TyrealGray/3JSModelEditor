@@ -19,8 +19,6 @@ define(function (require) {
 
         frameRenderer.render();
 
-        frameRenderer.loadUrlModelFiles('./source/test.stl');
-
         document.getElementById('loadModelButton').addEventListener('change', function (uploader) {
             frameRenderer.loadLocalModelFiles(uploader.target.files);
         });
