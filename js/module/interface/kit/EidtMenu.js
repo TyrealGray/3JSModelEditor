@@ -15,6 +15,9 @@ define(function (require, exports) {
                 menuItems: [{
                     itemID: 'deleteButton',
                     itemContent: 'delete',
+                }, {
+                    itemID: 'copyButton',
+                    itemContent: 'copy'
                 }]
             })
         };
