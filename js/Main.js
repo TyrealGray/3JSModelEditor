@@ -5,7 +5,6 @@ requirejs.config({
 
     paths: {
         text: 'thirdLib/requirejs/text',
-        GlobalVar: 'module/GlobalVar',
         MainFrame: 'module/MainFrame',
         THREE: 'thirdLib/threejs/Three.min',
     },
