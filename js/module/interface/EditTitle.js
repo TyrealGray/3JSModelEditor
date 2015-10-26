@@ -16,6 +16,10 @@ define(function (require, exports) {
 
             GlobalVar.transformTool.deleteModel();
         });
+
+        document.getElementById('copyButton').addEventListener('click', function (event) {
+            GlobalVar.transformTool.copyModel();
+        });
     }
 
     exports.getMenuContent = getMenuContent;

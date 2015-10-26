@@ -40,8 +40,6 @@ define(function (require) {
         GlobalVar.frameRenderer = new ThreejsRenderer();
 
         GlobalVar.frameRenderer.render();
-		
-		GlobalVar.frameRenderer.loadUrlModelFiles('./source/test.stl');
     };
 
     MainContent.prototype._bindPageEvent = function () {
