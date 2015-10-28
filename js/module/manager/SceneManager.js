@@ -29,12 +29,12 @@ define(function (require) {
         this.addStaticMesh(gridHelper);
 
         var light = new THREE.DirectionalLight(0xffffff, 1.89);
-        light.position.set(1, 1, 1);
+        light.position.set(-1, -1, -1).normalize();
 
         this.addLight(light);
 
         light = new THREE.DirectionalLight(0xffffff, 1.2);
-        light.position.set(-1, -1, -1);
+        light.position.set(1, 1, 1).normalize();
 
         this.addLight(light);
 

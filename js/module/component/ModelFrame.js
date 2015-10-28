@@ -8,7 +8,7 @@ define(function (require) {
 
         GlobalVar = require('module/GlobalVar');
 
-    function ModelFrame(modelDetail) {
+    function ModelFrame(modelGeometry) {
 
         this._axisDirection = {
             x: 1,
@@ -16,7 +16,7 @@ define(function (require) {
             z: 1
         };
 
-        this._model = new THREE.Mesh(modelDetail.geometry, new THREE.MeshLambertMaterial({
+        this._model = new THREE.Mesh(modelGeometry, new THREE.MeshLambertMaterial({
             color: 0xc8c8c8
         }));
 
@@ -38,7 +38,6 @@ define(function (require) {
         this._initModel();
 
         this._initBox();
-
     };
 
     ModelFrame.prototype._initModel = function () {

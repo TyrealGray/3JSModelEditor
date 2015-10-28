@@ -53,15 +53,11 @@ define(function (require) {
             return;
         }
 
-        var model = new ModelFrame({
-            geometry: modelGeometry
-        });
+        var model = new ModelFrame(modelGeometry);
 
         sceneController.spawnModel(model);
 
         GlobalVar.transformTool.attachModel(model);
-
-        ModelFrameSet.manageOverlapOtherModel(model);
     };
 
     ThreejsRenderer.prototype.onWindowResize = function () {
