@@ -95,6 +95,28 @@ define(['THREE'], function (THREE) {
 
             }
 
+
+            function ensureString(buf) {
+
+                if (typeof buf !== "string") {
+
+                    var array_buffer = new Uint8Array(buf);
+                    var str = '';
+                    for (var i = 0; i < buf.byteLength; i++) {
+
+                        str += String.fromCharCode(array_buffer[i]); // implicitly assumes little-endian
+
+                    }
+                    return str;
+
+                } else {
+
+                    return buf;
+
+                }
+
+            }
+
             function addFace(a, b, c, d, ua, ub, uc, ud, na, nb, nc, nd) {
 
                 var ia = parseVertexIndex(a);
@@ -217,7 +239,10 @@ define(['THREE'], function (THREE) {
 
             //
 
-            var lines = text.split('\n');
+
+            var bufText = ensureString(text);
+
+            var lines = bufText.split('\n');
 
             for (var i = 0; i < lines.length; i++) {
 
@@ -342,7 +367,7 @@ define(['THREE'], function (THREE) {
 
             }
 
-            //            var container = new THREE.Object3D();
+            //var container = new THREE.Object3D();
 
             var buffergeometry = null;
 
@@ -375,6 +400,8 @@ define(['THREE'], function (THREE) {
                 //
                 //                container.add(mesh);
 
+                buffergeometry.computeVertexNormals();
+                buffergeometry.computeFaceNormals();
             }
 
             console.timeEnd('OBJLoader');
