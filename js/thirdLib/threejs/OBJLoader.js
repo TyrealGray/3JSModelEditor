@@ -400,8 +400,10 @@ define(['THREE'], function (THREE) {
                 //
                 //                container.add(mesh);
 
-                buffergeometry.computeVertexNormals();
                 buffergeometry.computeFaceNormals();
+                buffergeometry.computeVertexNormals();
+                
+
             }
 
             console.timeEnd('OBJLoader');
