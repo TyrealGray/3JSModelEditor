@@ -12,8 +12,7 @@ define(function (require) {
     }
 
     CameraManager.prototype._init = function () {
-        this._camera.position.set(200, 200, 200);
-        //this._camera.lookAt(new THREE.Vector3(0, 0, 0));
+        this._camera.position.set(60, 110, 110);
     };
 
     CameraManager.prototype.setPosition = function (x, y, z) {
