@@ -19,14 +19,22 @@ define(function (require) {
     'use strict';
 
     var Context = require('module/Context'),
-        CssJsLoader = require('module/CssJsLoader');
+        CssJsLoader = require('module/CssJsLoader'),
+        Detector = require('thirdLib/threejs/Detector');
 
     var mainFrame = null;
 
     require(['MainFrame'], function (MainFrame) {
-        console.log('Editor Run');
 
-        mainFrame = new MainFrame();
+        if (!Detector.webgl) {
+            Detector.addGetWebGLMessage();
+        }
+
+        try {
+            mainFrame = new MainFrame();
+        } catch (e) {
+            console.error(e);
+        }
 
         loadCssFiles();
 
