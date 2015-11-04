@@ -6,6 +6,8 @@ define(function (require) {
 
         SceneManager = require('module/manager/SceneManager'),
         CameraManager = require('module/manager/CameraManager'),
+        TouchSensorManager = require('module/manager/TouchSensorManager'),
+
         TransformTool = require('module/component/TransformTool'),
 
         ModelFrameSet = require('module/util/ModelFrameSet'),
@@ -22,11 +24,7 @@ define(function (require) {
         this._domElement = domElement;
         this._sceneManager = new SceneManager();
         this._cameraManager = new CameraManager(this._domElement.parentElement.clientWidth, window.innerHeight, domElement);
-        this._transformTool = null;
-        this._orbitControl = null;
-        this._isTouchSensorDown = false;
-        this._isMouseMove = false;
-        this._isTransformStatus = false;
+        this._touchSensorManager = null;
 
         this._init();
     }
@@ -36,23 +34,10 @@ define(function (require) {
         self = this;
         GlobalVar.sceneController = this;
 
-        this._initTransformControl();
-        this._initOrbitControl();
+        this._touchSensorManager = new TouchSensorManager();
+        GlobalVar.touchSensorManager = this._touchSensorManager;
 
         this._bindEvent();
-    };
-
-    SceneController.prototype._initTransformControl = function () {
-        this._transformTool = new TransformTool(this._domElement);
-
-        GlobalVar.transformTool = this._transformTool;
-    };
-
-    SceneController.prototype._initOrbitControl = function () {
-
-        this._orbitControl = new THREE.OrbitControls(this._cameraManager.get(), this._domElement);
-        this._orbitControl.enableDamping = true;
-        this._orbitControl.enablePan = false;
     };
 
     SceneController.prototype._bindEvent = function () {
@@ -78,6 +63,7 @@ define(function (require) {
         this._sceneManager.addMesh(modelFrame.get().model);
         this._sceneManager.addStaticMesh(modelFrame.get().box);
         modelFrame.update();
+        ModelFrameSet.manageOverlapOtherModel(modelFrame);
     };
 
     SceneController.prototype.disposeModel = function (modelFrame) {
@@ -90,127 +76,46 @@ define(function (require) {
         this._sceneManager.addStaticMesh(mesh);
     };
 
-    SceneController.prototype.setCameraLookAt = function (position) {
-        this._cameraManager.lookAt(position);
-    };
-
-    SceneController.prototype.attachTransformControl = function (mesh) {
-        this._transformTool.attach(mesh);
-    };
-
     SceneController.prototype.onMouseDown = function (event) {
 
-        self._onOperatingStartEvent(event, 'onMouseDown');
+        GlobalVar.touchSensorManager.onOperatingStart(event, 'onMouseDown');
     };
 
     SceneController.prototype.onTouchStart = function (event) {
 
-        self._onOperatingStartEvent(event, 'onTouchStart');
+        GlobalVar.touchSensorManager.onOperatingStart(event, 'onTouchStart');
     };
 
-    SceneController.prototype._onOperatingStartEvent = function (event, operateMode) {
-        this._isTouchSensorDown = true;
-
-        this._isHitModifyMeshObject(event);
-
-        if (!this._isTransformStatus) {
-            this._onOrbitControlOperating(event, operateMode);
-        }
-    };
-
-    SceneController.prototype._isHitModifyMeshObject = function (event) {
-        var hitResult = this._sceneManager.getHitResultBy(event, this._sceneManager.HIT_RESULT_CHANNEL.MESH);
-
-        if (0 < hitResult.length) {
-
-            this._transformTool.attachModel(ModelFrameSet.getModelFrame(hitResult[0].object));
-            cameraTarget = hitResult[0].object.position;
-        }
-
-        this._isTransformStatus = this._transformTool.onPointerDown(event, (0 < hitResult.length) ? hitResult[0].point : null);
+    SceneController.prototype.queryModelFrame = function (event) {
+        return this._sceneManager.getHitResultBy(event, this._sceneManager.HIT_RESULT_CHANNEL.MESH);
     };
 
     SceneController.prototype.onMouseMove = function (event) {
 
-        self._onOperatingMoveEvent(event, 'onMouseMove');
+        GlobalVar.touchSensorManager.onOperatingMove(event, 'onMouseMove');
     };
 
     SceneController.prototype.onTouchMove = function (event) {
 
-        self._onOperatingMoveEvent(event, 'onTouchMove');
-    };
-
-    SceneController.prototype._onOperatingMoveEvent = function (event, operateMode) {
-        if (!this._isTouchSensorDown) {
-            return;
-        }
-
-        this._isMouseMove = true;
-
-        if (this._isTransformStatus) {
-            this._transformTool.onPointerMove(event);
-        } else {
-            this._onOrbitControlOperating(event, operateMode);
-        }
+        GlobalVar.touchSensorManager.onOperatingMove(event, 'onTouchMove');
     };
 
     SceneController.prototype.onMouseUp = function (event) {
 
-        self._onOperatingEventEnd(event, 'onMouseUp');
+        GlobalVar.touchSensorManager.onOperatingEnd(event, 'onMouseUp');
     };
 
     SceneController.prototype.onTouchEnd = function (event) {
 
-        self._onOperatingEventEnd(event, 'onTouchEnd');
+        GlobalVar.touchSensorManager.onOperatingEnd(event, 'onTouchEnd');
     };
 
     SceneController.prototype.onMouseWheel = function (event) {
-        self._orbitControl.onMouseWheel(event);
-    };
-
-    SceneController.prototype._onOperatingEventEnd = function (event, operateMode) {
-        if (this._isTransformStatus && !self._isMouseMove) {
-            if (null !== cameraTarget) {
-                self._orbitControl.target = cameraTarget;
-            }
-        }
-
-        this._isMouseMove = false;
-        this._isTouchSensorDown = false;
-        this._transformTool.onPointerUp(event);
-        this._onOrbitControlOperating(event, operateMode);
-    };
-
-    SceneController.prototype._onOrbitControlOperating = function (event, operateMode) {
-
-        switch (operateMode) {
-
-        case 'onMouseMove':
-            this._orbitControl.onMouseMove(event);
-            break;
-        case 'onTouchMove':
-            this._orbitControl.onTouchMove(event);
-            break;
-        case 'onTouchStart':
-            this._orbitControl.onTouchStart(event);
-            break;
-        case 'onMouseDown':
-            this._orbitControl.onMouseDown(event);
-            break;
-        case 'onMouseUp':
-            this._orbitControl.onMouseUp(event);
-            break;
-        case 'onTouchEnd':
-            this._orbitControl.onTouchEnd(event);
-            break;
-        default:
-            break;
-        }
+        GlobalVar.touchSensorManager.onZoomOperating(event);
     };
 
     SceneController.prototype.update = function () {
-        this._transformTool.update();
-        this._orbitControl.update();
+        this._touchSensorManager.update();
     };
 
     SceneController.prototype.getCameraManager = function () {
@@ -224,7 +129,8 @@ define(function (require) {
     SceneController.prototype.getRenderTarget = function () {
         return {
             scene: this.getSceneManager().get(),
-            camera: this.getCameraManager().get()
+            camera: this.getCameraManager().get(),
+            domElement: this._domElement
         };
     };
 
