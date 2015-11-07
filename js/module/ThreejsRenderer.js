@@ -5,10 +5,11 @@ define(function (require) {
     var CommonUtil = require('lib/CommonUtil'),
         THREE = require('THREE'),
 
-        ModelLoader = require('module/component/ModelLoader'),
         SceneController = require('module/SceneController'),
 
         ModelFrame = require('module/component/ModelFrame'),
+
+        ModelLoader = require('module/util/ModelLoader'),
         ModelFrameSet = require('module/util/ModelFrameSet'),
 
         GlobalVar = require('module/GlobalVar');
