@@ -7,7 +7,10 @@ define(function (require) {
         GlobalVar = require('module/GlobalVar');
 
     var pointerVector = new THREE.Vector2(0, 0, 0),
-        ray = new THREE.Raycaster();
+        ray = new THREE.Raycaster(),
+        vectorRay = new THREE.Raycaster();
+
+    vectorRay.near = 2.5;
 
     function SceneManager(scene) {
         this._scene = new THREE.Scene();
@@ -73,6 +76,21 @@ define(function (require) {
 
     SceneManager.prototype.removeStaticMesh = function (staticMesh) {
         this._scene.remove(staticMesh);
+    };
+
+    SceneManager.prototype.getVectorHitResultBy = function (origin, direction, channel) {
+        vectorRay.set(origin, direction);
+        var hitResult = null;
+
+        switch (channel) {
+        case this.HIT_RESULT_CHANNEL.MESH:
+            hitResult = vectorRay.intersectObjects(this._meshes, true);
+            break;
+        default:
+            break;
+        }
+
+        return hitResult;
     };
 
     SceneManager.prototype.getHitResultBy = function (event, channel) {
