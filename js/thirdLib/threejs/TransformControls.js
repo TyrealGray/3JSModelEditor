@@ -430,11 +430,11 @@ define(function (require) {
                 }))]
 			],
 
-            E: [
-				[new THREE.Line(new CircleGeometry(1.25, 'z', 1), new GizmoLineMaterial({
-                    color: 0xcccc00
-                }))]
-			],
+            //            E: [
+            //				[new THREE.Line(new CircleGeometry(1.25, 'z', 1), new GizmoLineMaterial({
+            //                    color: 0xcccc00
+            //                }))]
+            //			],
 
             XYZE: [
 				[new THREE.Line(new CircleGeometry(1, 'z', 1), new GizmoLineMaterial({
@@ -458,10 +458,9 @@ define(function (require) {
 				[new THREE.Mesh(new THREE.TorusGeometry(1, 0.12, 4, 12, Math.PI), pickerMaterial), [0, 0, 0], [0, 0, -Math.PI / 2]]
 			],
 
-            E: [
-				[new THREE.Mesh(new THREE.TorusGeometry(1.25, 0.12, 2, 24), pickerMaterial)]
-			],
-
+//            E: [
+//				[new THREE.Mesh(new THREE.TorusGeometry(1.25, 0.12, 2, 24), pickerMaterial)]
+//			],
             XYZE: [
 				[new THREE.Mesh(new THREE.Geometry())] // TODO
 			]
@@ -1053,7 +1052,7 @@ define(function (require) {
                 tempVector.copy(offset).sub(worldPosition);
                 tempVector.multiply(parentScale);
 
-                if (scope.axis === "E") {
+                /*if (scope.axis === "E") {
 
                     point.applyMatrix4(tempMatrix.getInverse(lookAtMatrix));
                     tempVector.applyMatrix4(tempMatrix.getInverse(lookAtMatrix));
@@ -1084,7 +1083,8 @@ define(function (require) {
 
                     scope.object.quaternion.copy(tempQuaternion);
 
-                } else if (scope.space === "local") {
+                } else */
+                if (scope.space === "local") {
 
                     point.applyMatrix4(tempMatrix.getInverse(worldRotationMatrix));
 
