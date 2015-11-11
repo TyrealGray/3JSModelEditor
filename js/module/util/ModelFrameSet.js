@@ -6,7 +6,9 @@ define(function (require, exports) {
         THREE = require('THREE');
 
     var modelMap = {},
-        count = 0;
+        count = 0,
+        direction = new THREE.Vector3(0, 0, 0),
+        tempVector = new THREE.Vector3(0, 0, 0);
 
     function addModelFrame(modelFrame) {
 
@@ -31,6 +33,10 @@ define(function (require, exports) {
 
     function getModelFrame(mesh) {
 
+        if (!CommonUtil.isDefined(modelMap[mesh.name])) {
+            return null;
+        }
+
         return modelMap[mesh.name];
     }
 
@@ -40,26 +46,18 @@ define(function (require, exports) {
 
         for (var x in modelMap) {
 
-            if (x === modelFrame.get().model.name) {
+            if (x === modelFrame.get().model.name || !modelMap[x].isOverlap(modelFrame)) {
                 continue;
             }
 
-            overlapBox = modelMap[x].checkOverlap(modelFrame);
+            tempVector.subVectors(modelMap[x].get().model.position, modelFrame.get().model.position);
 
-            if (null === overlapBox) {
-                continue;
-            }
-
-            var direction = modelMap[x].get().model.position.sub(modelFrame.get().model.position),
-                dx = overlapBox.size().x,
-                dz = overlapBox.size().z;
+            direction.copy(tempVector);
 
             direction.normalize();
 
-            direction.x += 0.05;
-            direction.z += 0.05;
-
-            var tempVector = new THREE.Vector3(0, 0, 0);
+            direction.x = (0 < direction.x) ? (direction.x * 10 + 2) : (direction.x * 10 - 2);
+            direction.z = (0 < direction.z) ? (direction.z * 10 + 2) : (direction.z * 10 - 2);
 
             do {
 
@@ -71,7 +69,7 @@ define(function (require, exports) {
 
                 modelMap[x].update();
 
-            } while (null !== modelMap[x].checkOverlap(modelFrame));
+            } while (modelMap[x].isOverlap(modelFrame));
 
             manageOverlapOtherModel(modelMap[x]);
 
