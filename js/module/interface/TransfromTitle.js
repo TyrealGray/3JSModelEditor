@@ -4,6 +4,8 @@ define(function (require, exports) {
 
     var CommonUtil = require('lib/CommonUtil'),
 
+        TouchSensorManager = require('module/manager/TouchSensorManager'),
+
         TransfromMenu = require('module/interface/kit/TransfromMenu'),
 
         GlobalVar = require('module/GlobalVar');
@@ -14,17 +16,18 @@ define(function (require, exports) {
 
     function bindEvent() {
 
-        var transfromTool = GlobalVar.transformTool;
+        var transfromTool = GlobalVar.transformTool,
+            touchSensorManager = GlobalVar.touchSensorManager;
 
         document.getElementById('translateButton').addEventListener('click', function (event) {
-            transfromTool.setMode(GlobalVar.transformTool.TRANSFORM_MODE.TRANSFORM);
+            touchSensorManager.setStatus(TouchSensorManager.prototype.STATUS_TRANSFROM.TRANSLATE);
         });
 
         document.getElementById('rotateButton').addEventListener('click', function (event) {
-            transfromTool.setMode(GlobalVar.transformTool.TRANSFORM_MODE.ROTATE);
+            touchSensorManager.setStatus(TouchSensorManager.prototype.STATUS_TRANSFROM.ROTATE);
         });
         document.getElementById('scaleButton').addEventListener('click', function (event) {
-            transfromTool.setMode(GlobalVar.transformTool.TRANSFORM_MODE.SCALE);
+            touchSensorManager.setStatus(TouchSensorManager.prototype.STATUS_TRANSFROM.SCALE);
         });
 
         document.getElementById('mirrorXButton').addEventListener('click', function (event) {

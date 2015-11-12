@@ -34,10 +34,15 @@ define(function (require) {
         self = this;
         GlobalVar.sceneController = this;
 
-        this._touchSensorManager = new TouchSensorManager();
-        GlobalVar.touchSensorManager = this._touchSensorManager;
+        //put this function after this._sceneManager and this._cameraManager initialize
+        this._initTouchSensorManager();
 
         this._bindEvent();
+    };
+
+    SceneController.prototype._initTouchSensorManager = function () {
+        this._touchSensorManager = new TouchSensorManager();
+        GlobalVar.touchSensorManager = this._touchSensorManager;
     };
 
     SceneController.prototype._bindEvent = function () {
@@ -86,8 +91,40 @@ define(function (require) {
         GlobalVar.touchSensorManager.onOperatingStart(event, 'onTouchStart');
     };
 
+    SceneController.prototype.queryModelFrameByVector = function (origin, direction) {
+
+        var hitResult = this._sceneManager.getVectorHitResultBy(origin, direction, SceneManager.prototype.HIT_RESULT_CHANNEL.MESH);
+
+        if (0 < hitResult.length && null === ModelFrameSet.getModelFrame(hitResult[0].object)) {
+            hitResult.length = 0;
+        }
+
+        return hitResult;
+    };
+
     SceneController.prototype.queryModelFrame = function (event) {
-        return this._sceneManager.getHitResultBy(event, this._sceneManager.HIT_RESULT_CHANNEL.MESH);
+        var hitResult = this._queryMesh(event);
+
+        if (0 < hitResult.length && null === ModelFrameSet.getModelFrame(hitResult[0].object)) {
+            hitResult.length = 0;
+        }
+
+        return hitResult;
+
+    };
+
+    SceneController.prototype.queryModelSupport = function (event) {
+        var hitResult = this._queryMesh(event);
+
+        if (0 < hitResult.length && null === ModelSupportSet.getModelSupport(hitResult[0].object)) {
+            hitResult.length = 0;
+        }
+
+        return hitResult;
+    };
+
+    SceneController.prototype._queryMesh = function (event) {
+        return this._sceneManager.getHitResultBy(event, SceneManager.prototype.HIT_RESULT_CHANNEL.MESH);
     };
 
     SceneController.prototype.onMouseMove = function (event) {

@@ -15,7 +15,7 @@ define(function (require) {
     var cameraTarget = null;
 
     function TouchSensorManager() {
-        this._status = this.STATUS_TRANSFROM;
+        this._status = this.STATUS_TRANSFROM.TRANSLATE;
         this._transformTool = null;
         this._orbitControl = null;
         this._isTouchSensorDown = false;
@@ -32,14 +32,13 @@ define(function (require) {
     };
 
     TouchSensorManager.prototype.STATUS_PRINT_CUSTOM = {
-        ADD_SUPPORT: 3
+        ADD_SUPPORT: 3,
     };
 
     TouchSensorManager.prototype._init = function () {
         this._initTransformControl();
         this._initOrbitControl();
     };
-
 
     TouchSensorManager.prototype._initTransformControl = function () {
         this._transformTool = new TransformTool(GlobalVar.sceneController.getRenderTarget().domElement);
@@ -68,8 +67,7 @@ define(function (require) {
         case this.STATUS_TRANSFROM.SCALE:
             this._transformTool.setMode(TransformTool.prototype.TRANSFORM_MODE.SCALE);
             break;
-        case this.STATUS_PRINT_CUSTOM.ADD_SUPPORT:
-            break;
+
         default:
             break;
         }
@@ -84,13 +82,11 @@ define(function (require) {
     };
 
     TouchSensorManager.prototype.onOperatingStart = function (event, operateMode) {
+
         this._isTouchSensorDown = true;
 
-        if (this.STATUS_PRINT_CUSTOM.ADD_SUPPORT === this.getStatus()) {
-            //TODO
-        }
+            this._isTransformStatus = this._isSwitchToTransformStatus(event);
 
-        this._isTransformStatus = this._isHitModifyMeshObject(event);
 
         if (!this._isTransformStatus) {
             this._onOrbitControlOperating(event, operateMode);
@@ -98,6 +94,9 @@ define(function (require) {
     };
 
     TouchSensorManager.prototype.onOperatingMove = function (event, operateMode) {
+
+        this._transformTool.onPointerHover(event);
+
         if (!this._isTouchSensorDown) {
             return;
         }
@@ -128,7 +127,8 @@ define(function (require) {
         this._orbitControl.onMouseWheel(event);
     };
 
-    TouchSensorManager.prototype._isHitModifyMeshObject = function (event) {
+    TouchSensorManager.prototype._isSwitchToTransformStatus = function (event) {
+
         var hitResult = GlobalVar.sceneController.queryModelFrame(event);
 
         if (0 < hitResult.length) {
