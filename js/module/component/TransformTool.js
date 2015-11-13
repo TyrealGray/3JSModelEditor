@@ -26,7 +26,6 @@ define(function (require) {
     TransformTool.prototype._init = function (domElement) {
         this._transformControls = new THREE.TransformControls(GlobalVar.sceneController.getRenderTarget().camera, domElement);
         this._transformControls.setSpace('world');
-        this._transformControls.visible = false;
         this._transformControls.size = 2;
 
         GlobalVar.sceneController.spawnMesh(this._transformControls);
@@ -150,21 +149,20 @@ define(function (require) {
         case this.TRANSFORM_MODE.TRANSFORM:
             this._transformControls.setMode('translate');
             this._transformControls.setSpace('world');
-            this._transformControls.visible = false;
             break;
         case this.TRANSFORM_MODE.ROTATE:
             this._transformControls.setMode('rotate');
             this._transformControls.setSpace('world');
-            this._transformControls.visible = true;
             break;
         case this.TRANSFORM_MODE.SCALE:
             this._transformControls.setMode('scale');
             this._transformControls.setSpace('local');
-            this._transformControls.visible = true;
             break;
         default:
             break;
         }
+		
+		this._transformControls.visible = true;
     };
 
     TransformTool.prototype.attachModel = function (model) {
