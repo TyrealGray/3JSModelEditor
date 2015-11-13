@@ -28,9 +28,7 @@ define(function (require) {
     ModelFrame.prototype.clone = function () {
         var cloneGeometry = this._model.geometry.clone();
 
-        return new ModelFrame({
-            geometry: cloneGeometry
-        });
+        return new ModelFrame(cloneGeometry);
     };
 
     ModelFrame.prototype._init = function () {
@@ -56,7 +54,7 @@ define(function (require) {
         this._boundingBox.update();
     };
 
-    ModelFrame.prototype.checkOverlap = function (otherModelFrame) {
+    ModelFrame.prototype.isOverlap = function (otherModelFrame) {
 
         otherModelFrame.get().model.updateMatrix();
         this._model.updateMatrix();
@@ -66,12 +64,7 @@ define(function (require) {
         otherBoundingBox.box.setFromObject(otherModelFrame.get().model);
         this._boundingBox.box.setFromObject(this._model);
 
-        if (this._boundingBox.box.isIntersectionBox(otherBoundingBox.box)) {
-
-            return this._boundingBox.box.intersect(otherBoundingBox.box);
-        }
-
-        return null;
+        return this._boundingBox.box.isIntersectionBox(otherBoundingBox.box);
 
     };
 
@@ -164,22 +157,34 @@ define(function (require) {
         };
     };
 
-    ModelFrame.prototype.selected = function () {
-        this._model.material.transparent = true;
-        this._model.material.opacity = 0.8;
 
+    ModelFrame.prototype.setColor = function (color) {
         this._model.material.setValues({
-            color: 0x005858
+            color: color
         });
     };
 
-    ModelFrame.prototype.unselected = function () {
+    ModelFrame.prototype.setPosition = function (position) {
+        this._model.position.set(position.x, position.y, position.z);
+        this.update();
+    };
+
+    ModelFrame.prototype.setBoxShow = function (isShow) {
+        this._boundingBox.visible = isShow;
+    };
+
+    ModelFrame.prototype.selected = function (color) {
+        this._model.material.transparent = true;
+        this._model.material.opacity = 0.8;
+
+        this.setColor(color);
+    };
+
+    ModelFrame.prototype.unselected = function (color) {
         this._model.material.transparent = false;
         this._model.material.opacity = 1.0;
 
-        this._model.material.setValues({
-            color: 0xc8c8c8
-        });
+        this.setColor(color);
     };
 
     return ModelFrame;
