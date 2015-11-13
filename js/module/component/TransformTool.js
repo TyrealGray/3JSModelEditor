@@ -1,4 +1,4 @@
-/* global define */
+/* global define,console */
 define(function (require) {
     'use strict';
 
@@ -72,6 +72,8 @@ define(function (require) {
         GlobalVar.sceneController.disposeModel(this._attachedModel);
 
         this._attachedModel = null;
+
+        this._transformControls.detach();
     };
 
     TransformTool.prototype.copyModel = function () {
@@ -80,7 +82,6 @@ define(function (require) {
         }
 
         GlobalVar.sceneController.spawnModel(this._attachedModel.clone());
-
     };
 
     TransformTool.prototype.setModelScaleValue = function (x, y, z, isLockProportion) {
@@ -175,6 +176,7 @@ define(function (require) {
         this._transformControls.attach(model.get().model);
         this._attachedModel = model;
         this._attachedModel.selected();
+        this.setMode(this._transformMode);
     };
 
     TransformTool.prototype.onPointerDown = function (event, hitPoint) {
@@ -189,7 +191,20 @@ define(function (require) {
 
         this._transformControls.onPointerMove(event);
 
+        if (this.TRANSFORM_MODE.ROTATE === this._transformMode) {
+            return;
+        }
+
         this._attachedModel.update();
+
+    };
+
+    TransformTool.prototype.onPointerHover = function (event) {
+        if (!CommonUtil.isDefined(this._attachedModel)) {
+            return;
+        }
+
+        this._transformControls.onPointerHover(event);
     };
 
     TransformTool.prototype.onPointerUp = function (event) {
