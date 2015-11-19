@@ -17,13 +17,18 @@ define(function (require) {
         };
 
         this._model = new THREE.Mesh(modelGeometry, new THREE.MeshLambertMaterial({
-            color: 0xc8c8c8
+            color: this.UNSELECT_COLOR
         }));
 
         this._boundingBox = null;
 
         this._init();
     }
+
+    ModelFrame.prototype.SELECT_COLOR = 0x005858;
+    ModelFrame.prototype.BOX_SELECT_COLOR = 0x8bd813;
+    ModelFrame.prototype.BOX_UNSELECT_COLOR = 0x281858;
+    ModelFrame.prototype.UNSELECT_COLOR = 0xc8c8c8;
 
     ModelFrame.prototype.clone = function () {
         var cloneGeometry = this._model.geometry.clone();
@@ -50,8 +55,15 @@ define(function (require) {
     };
 
     ModelFrame.prototype._initBox = function () {
-        this._boundingBox = new THREE.BoundingBoxHelper(this._model, 0x281858);
-        this._boundingBox.update();
+
+        this._boundingBox = new THREE.BoxHelper(this._model);
+        this._boundingBox.material.setValues({
+            color: this.BOX_UNSELECT_COLOR
+        });
+
+        this._boundingVolume = new THREE.BoundingBoxHelper(this._model, this.BOX_UNSELECT_COLOR);
+
+        this._boundingVolume.update();
     };
 
     ModelFrame.prototype.isOverlap = function (otherModelFrame) {
@@ -59,12 +71,12 @@ define(function (require) {
         otherModelFrame.get().model.updateMatrix();
         this._model.updateMatrix();
 
-        var otherBoundingBox = otherModelFrame.get().box;
+        var otherBoundingBox = otherModelFrame.get().boxVolume;
 
         otherBoundingBox.box.setFromObject(otherModelFrame.get().model);
-        this._boundingBox.box.setFromObject(this._model);
+        this._boundingVolume.box.setFromObject(this._model);
 
-        return this._boundingBox.box.isIntersectionBox(otherBoundingBox.box);
+        return this._boundingVolume.box.isIntersectionBox(otherBoundingBox.box);
 
     };
 
@@ -118,7 +130,7 @@ define(function (require) {
 
         this.update();
 
-        return this._boundingBox.box.size();
+        return this._boundingVolume.box.size();
     };
 
     ModelFrame.prototype.reset = function () {
@@ -137,9 +149,9 @@ define(function (require) {
 
         this._model.updateMatrix();
 
-        this._boundingBox.update();
+        this._boundingBox.update(this._model);
 
-        this._boundingBox.box.setFromObject(this._model);
+        this._boundingVolume.box.setFromObject(this._model);
     };
 
     ModelFrame.prototype.dispose = function () {
@@ -147,13 +159,16 @@ define(function (require) {
         this._model.material.dispose();
         this._boundingBox.geometry.dispose();
         this._boundingBox.material.dispose();
+        this._boundingVolume.geometry.dispose();
+        this._boundingVolume.material.dispose();
     };
 
     ModelFrame.prototype.get = function () {
 
         return {
             model: this._model,
-            box: this._boundingBox
+            box: this._boundingBox,
+            boxVolume: this._boundingVolume
         };
     };
 
@@ -169,22 +184,26 @@ define(function (require) {
         this.update();
     };
 
-    ModelFrame.prototype.setBoxShow = function (isShow) {
-        this._boundingBox.visible = isShow;
-    };
-
-    ModelFrame.prototype.selected = function (color) {
+    ModelFrame.prototype.selected = function () {
         this._model.material.transparent = true;
         this._model.material.opacity = 0.8;
 
-        this.setColor(color);
+        this._boundingBox.material.setValues({
+            color: this.BOX_SELECT_COLOR
+        });
+
+        this.setColor(this.SELECT_COLOR);
     };
 
-    ModelFrame.prototype.unselected = function (color) {
+    ModelFrame.prototype.unselected = function () {
         this._model.material.transparent = false;
         this._model.material.opacity = 1.0;
 
-        this.setColor(color);
+        this._boundingBox.material.setValues({
+            color: this.BOX_UNSELECT_COLOR
+        });
+
+        this.setColor(this.UNSELECT_COLOR);
     };
 
     return ModelFrame;
