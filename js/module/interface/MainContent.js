@@ -4,7 +4,7 @@ define(function (require) {
 
     var CommonUtil = require('lib/CommonUtil'),
 
-        Mustache = require('thirdLib/mustachejs/mustache.min'),
+        Mustache = require('thirdLib/mustache.min'),
 
         MainContentTemplate = require('text!../../../html/MainContent.html'),
 

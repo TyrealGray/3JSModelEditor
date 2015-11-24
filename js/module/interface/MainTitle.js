@@ -3,7 +3,7 @@ define(function (require, exports) {
     'use strict';
 
     var CommonUtil = require('lib/CommonUtil'),
-        Mustache = require('thirdLib/mustachejs/mustache.min'),
+        Mustache = require('thirdLib/mustache.min'),
 
         MainMenuTemplate = require('text!../../../html/MainMenu.html'),
         MenuItemTemplate = require('text!../../../html/MenuItem.html'),
