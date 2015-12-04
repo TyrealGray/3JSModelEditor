@@ -2,7 +2,7 @@
 define(function (require, exports) {
     'use strict';
 
-    var Mustache = require('thirdLib/mustachejs/mustache.min'),
+    var Mustache = require('thirdLib/mustache.min'),
 
         MenuItemTemplate = require('text!../../../../html/MenuItem.html');
 
