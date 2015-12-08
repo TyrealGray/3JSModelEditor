@@ -1,0 +1,1 @@
+define(["require","exports","module"],function(e,t){"use strict";function n(e){var t=document.createElement("link");t.setAttribute("rel","stylesheet"),t.setAttribute("type","text/css"),t.setAttribute("href",e),document.getElementsByTagName("head")[0].appendChild(t)}t.loadCssFile=n});

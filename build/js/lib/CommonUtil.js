@@ -1,0 +1,1 @@
+define(["require","exports","module"],function(e,t){"use strict";function n(e){return e!==null&&e!=="undefined"&&e!==undefined}function r(e){return n(e)?Object.prototype.toString.call(e)==="[object Function]":!1}function i(e){return n(e)?Object.prototype.toString.call(e)==="[object String]":!1}function s(e){return!isNaN(e)}t.isDefined=n,t.isFunction=r,t.isString=i,t.isNumber=s});

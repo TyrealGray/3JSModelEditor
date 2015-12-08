@@ -1,0 +1,1 @@
+define(["require","exports","module"],function(e,t){"use strict";function n(e){return e||(e=window.event),e.which?e.which===3:e.button?e.button===2:!1}function r(e){e&&(e.cancelBubble=!0,e.stopPropagation&&e.stopPropagation())}t.isRightClick=n,t.stopPropagation=r});

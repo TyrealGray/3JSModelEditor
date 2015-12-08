@@ -1,0 +1,10 @@
+{{#menuItems}}
+<li class="pure-menu-item {{#itemChildrens}} pure-menu-has-children pure-menu-allow-hover {{/itemChildrens}}">
+    <a style="cursor:pointer" id="{{itemID}}" class="pure-menu-link">{{{itemContent}}}</a> 
+    {{#itemChildrens}}
+    <ul class="pure-menu-children">
+        {{{itemChildrens}}}
+    </ul>
+    {{/itemChildrens}}
+</li>
+{{/menuItems}}
