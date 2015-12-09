@@ -5,7 +5,6 @@ requirejs.config({
 
     paths: {
         text: 'thirdLib/requirejs/text',
-        MainFrame: 'module/MainFrame',
         THREE: 'thirdLib/threejs/Three.min',
     },
     shim: {
@@ -20,11 +19,12 @@ define(function (require) {
 
     var Context = require('module/Context'),
         CssJsLoader = require('module/CssJsLoader'),
-        Detector = require('thirdLib/threejs/Detector');
+        Detector = require('thirdLib/threejs/Detector'),
+        MainFrame = require('module/MainFrame');
 
     var mainFrame = null;
 
-    require(['MainFrame'], function (MainFrame) {
+    require(['thirdLib/threejs/Detector'], function (Detector) {
 
         if (!Detector.webgl) {
             Detector.addGetWebGLMessage();
