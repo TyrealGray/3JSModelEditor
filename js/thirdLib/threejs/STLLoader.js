@@ -203,6 +203,9 @@ define(['THREE'], function (THREE) {
 
             }
 
+            geometry.computeFaceNormals();
+            geometry.computeVertexNormals();
+
             return geometry;
 
         },
@@ -240,6 +243,9 @@ define(['THREE'], function (THREE) {
 
             geometry.computeBoundingBox();
             geometry.computeBoundingSphere();
+
+            geometry.computeFaceNormals();
+            geometry.computeVertexNormals();
 
             return geometry;
 
