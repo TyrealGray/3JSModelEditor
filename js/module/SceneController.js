@@ -16,9 +16,6 @@ define(function (require) {
 
     require('thirdLib/threejs/OrbitControls');
 
-    var self = null,
-        cameraTarget = null;
-
     function SceneController(domElement) {
 
         this._domElement = domElement;
@@ -31,7 +28,6 @@ define(function (require) {
 
     SceneController.prototype._init = function () {
 
-        self = this;
         GlobalVar.sceneController = this;
 
         //put this function after this._sceneManager and this._cameraManager initialize

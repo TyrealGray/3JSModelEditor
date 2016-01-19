@@ -4,9 +4,7 @@ define(function (require, exports) {
 
     var CommonUtil = require('lib/CommonUtil'),
 
-        THREE = require('THREE'),
-
-        GlobalVar = require('module/GlobalVar');
+        THREE = require('THREE');
 
     require('thirdLib/threejs/STLLoader');
     require('thirdLib/threejs/OBJLoader');
@@ -34,9 +32,8 @@ define(function (require, exports) {
             return;
         }
 
-        if (!CommonUtil.isDefined(_STLloader) || !CommonUtil.isDefined(_OBJloader)) {
-            _initOBJloader();
-            _initSTLloader();
+        if (!isLoaderInit()) {
+            initLoader();
         }
 
         var file = files[0];
@@ -63,13 +60,28 @@ define(function (require, exports) {
     }
 
     function loadServerUrl(url, onModelReady) {
-        if (!CommonUtil.isDefined(_STLloader) || !CommonUtil.isDefined(_OBJloader)) {
-            _initOBJloader();
-            _initSTLloader();
+        if (!isLoaderInit()) {
+            initLoader();
         }
 
-        var findStlModelIndex = url.search(/\\*.stl/i),
-            findObjModelIndex = url.search(/\\*.obj/i);
+        var fileName = url;
+
+        loadModel(fileName, url, onModelReady);
+    }
+
+    function loadServerUrlHash(fileName, url, onModelReady) {
+
+        if (!isLoaderInit()) {
+            initLoader();
+        }
+
+        loadModel(fileName, url, onModelReady);
+    }
+
+    function loadModel(fileName, url, onModelReady) {
+
+        var findStlModelIndex = fileName.search(/\\*.stl/i),
+            findObjModelIndex = fileName.search(/\\*.obj/i);
 
         if (NOT_MODEL_FILE === findObjModelIndex && findObjModelIndex === findStlModelIndex) {
             return;
@@ -80,8 +92,29 @@ define(function (require, exports) {
         loader.load(url, onModelReady);
     }
 
+    function loadStl(data, onModelReady) {
 
+        if (!CommonUtil.isDefined(_STLloader)) {
+            _initSTLloader();
+        }
+
+        var loader = _STLloader;
+
+        onModelReady(loader.parse(data));
+    }
+
+    function initLoader() {
+        _initOBJloader();
+        _initSTLloader();
+    }
+
+    function isLoaderInit() {
+        return (CommonUtil.isDefined(_STLloader) && CommonUtil.isDefined(_OBJloader));
+    }
+
+    exports.loadStl = loadStl;
     exports.loadLocalFiles = loadLocalFiles;
     exports.loadServerUrl = loadServerUrl;
+    exports.loadServerUrlHash = loadServerUrlHash;
 
 });
