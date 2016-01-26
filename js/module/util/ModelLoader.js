@@ -32,20 +32,17 @@ define(function (require, exports) {
             return;
         }
 
+        var file = files[0];
+
         if (!isLoaderInit()) {
             initLoader();
         }
 
-        var file = files[0];
+        var loader = filterLoader(file.name);
 
-        var findStlModelIndex = file.name.search(/\\*.stl/i),
-            findObjModelIndex = file.name.search(/\\*.obj/i);
-
-        if (NOT_MODEL_FILE === findObjModelIndex && findObjModelIndex === findStlModelIndex) {
+        if (null === loader) {
             return;
         }
-
-        var loader = (NOT_MODEL_FILE === findObjModelIndex) ? _STLloader : _OBJloader;
 
         var reader = new FileReader();
 
@@ -66,7 +63,7 @@ define(function (require, exports) {
 
         var fileName = url;
 
-        loadModel(fileName, url, onModelReady);
+        loadModelByUrl(fileName, url, onModelReady);
     }
 
     function loadServerUrlHash(fileName, url, onModelReady) {
@@ -75,21 +72,45 @@ define(function (require, exports) {
             initLoader();
         }
 
-        loadModel(fileName, url, onModelReady);
+        loadModelByUrl(fileName, url, onModelReady);
     }
 
-    function loadModel(fileName, url, onModelReady) {
+    function loadModelByUrl(fileName, url, onModelReady) {
+
+        var loader = filterLoader(fileName);
+
+        if (null === loader) {
+            return;
+        }
+
+        loader.load(url, onModelReady);
+    }
+
+    function loadModelByArrayBuffer(fileName, buffer, onModelReady) {
+
+        if (!isLoaderInit()) {
+            initLoader();
+        }
+
+        var loader = filterLoader(fileName);
+
+        if (null === loader) {
+            return;
+        }
+
+        onModelReady(loader.parse(buffer));
+    }
+
+    function filterLoader(fileName) {
 
         var findStlModelIndex = fileName.search(/\\*.stl/i),
             findObjModelIndex = fileName.search(/\\*.obj/i);
 
         if (NOT_MODEL_FILE === findObjModelIndex && findObjModelIndex === findStlModelIndex) {
-            return;
+            return null;
         }
 
-        var loader = (NOT_MODEL_FILE === findObjModelIndex) ? _STLloader : _OBJloader;
-
-        loader.load(url, onModelReady);
+        return (NOT_MODEL_FILE === findObjModelIndex) ? _STLloader : _OBJloader;
     }
 
     function loadStl(data, onModelReady) {
@@ -116,5 +137,6 @@ define(function (require, exports) {
     exports.loadLocalFiles = loadLocalFiles;
     exports.loadServerUrl = loadServerUrl;
     exports.loadServerUrlHash = loadServerUrlHash;
+    exports.loadModelByArrayBuffer = loadModelByArrayBuffer;
 
 });
