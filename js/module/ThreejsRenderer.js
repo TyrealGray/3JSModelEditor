@@ -48,6 +48,18 @@ define(function (require) {
         ModelLoader.loadServerUrl(url, this.onModelLoad);
     };
 
+    ThreejsRenderer.prototype.loadUrlHashModel = function (fileName, url) {
+        ModelLoader.loadServerUrlHash(fileName, url, this.onModelLoad);
+    };
+
+    ThreejsRenderer.prototype.loadStlModelArrayBuffer = function (buffer) {
+        ModelLoader.loadStl(buffer, this.onModelLoad);
+    };
+
+    ThreejsRenderer.prototype.loadModelByArrayBuffer = function (fileName, buffer) {
+        ModelLoader.loadStl(fileName, buffer, this.onModelLoad);
+    };
+
     ThreejsRenderer.prototype.onModelLoad = function (modelGeometry) {
         if (!CommonUtil.isDefined(modelGeometry)) {
             console.error('loadModelFile error');
