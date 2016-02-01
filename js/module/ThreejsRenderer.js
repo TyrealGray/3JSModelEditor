@@ -14,7 +14,8 @@ define(function (require) {
 
         GlobalVar = require('module/GlobalVar');
 
-    var sceneController = null;
+    var sceneController = null,
+        jsonLoader = null;
 
     function ThreejsRenderer() {
         this._renderer = new THREE.WebGLRenderer();
@@ -46,6 +47,27 @@ define(function (require) {
 
     ThreejsRenderer.prototype.loadUrlModelFiles = function (url) {
         ModelLoader.loadServerUrl(url, this.onModelLoad);
+    };
+
+    ThreejsRenderer.prototype.loadUrlHashModel = function (fileName, url) {
+        ModelLoader.loadServerUrlHash(fileName, url, this.onModelLoad);
+    };
+
+    ThreejsRenderer.prototype.loadStlModelArrayBuffer = function (buffer) {
+        ModelLoader.loadStl(buffer, this.onModelLoad);
+    };
+
+    ThreejsRenderer.prototype.loadModelByArrayBuffer = function (fileName, buffer) {
+        ModelLoader.loadStl(fileName, buffer, this.onModelLoad);
+    };
+
+    ThreejsRenderer.prototype.loadUrlJsonModel = function (url) {
+
+        if (null === jsonLoader) {
+            jsonLoader = new THREE.JSONLoader();
+        }
+
+        jsonLoader.load(url, this.onModelLoad);
     };
 
     ThreejsRenderer.prototype.onModelLoad = function (modelGeometry) {
