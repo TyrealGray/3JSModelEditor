@@ -8,8 +8,6 @@ define(function (require) {
         CameraManager = require('module/manager/CameraManager'),
         TouchSensorManager = require('module/manager/TouchSensorManager'),
 
-        TransformTool = require('module/component/TransformTool'),
-
         ModelFrameSet = require('module/util/ModelFrameSet'),
 
         GlobalVar = require('module/GlobalVar');

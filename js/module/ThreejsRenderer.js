@@ -10,7 +10,6 @@ define(function (require) {
         ModelFrame = require('module/component/ModelFrame'),
 
         ModelLoader = require('module/util/ModelLoader'),
-        ModelFrameSet = require('module/util/ModelFrameSet'),
 
         GlobalVar = require('module/GlobalVar');
 
