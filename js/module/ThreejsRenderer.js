@@ -10,7 +10,6 @@ define(function (require) {
         ModelFrame = require('module/component/ModelFrame'),
 
         ModelLoader = require('module/util/ModelLoader'),
-        ModelFrameSet = require('module/util/ModelFrameSet'),
 
         GlobalVar = require('module/GlobalVar');
 
@@ -88,8 +87,6 @@ define(function (require) {
         sceneController.onWindowResize();
 
         this._renderer.setSize(this._renderer.domElement.parentElement.clientWidth, window.innerHeight * 0.95);
-
-        this.render();
     };
 
     ThreejsRenderer.prototype.render = function () {
