@@ -87,8 +87,6 @@ define(function (require) {
         sceneController.onWindowResize();
 
         this._renderer.setSize(this._renderer.domElement.parentElement.clientWidth, window.innerHeight * 0.95);
-
-        this.render();
     };
 
     ThreejsRenderer.prototype.render = function () {

@@ -42,6 +42,10 @@ define(function (require) {
         this.addLight(light);
 
         this.addLight(new THREE.AmbientLight("#556699"));
+        
+        this.addStaticMesh(new THREE.CubeCamera(0.1, 5000, 512));
+        
+        this._scene.fog = new THREE.FogExp2('0xcacaca', 0.007);
 
     };
 
